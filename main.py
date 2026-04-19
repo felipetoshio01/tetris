@@ -1,11 +1,19 @@
 import pygame
+import random
 
 colors: dict[str, tuple[int, int, int]] = {
     "bg_color": (27, 27, 27),
     "bg_block_area_color": (40, 40, 40),
     "block_area_line": (200, 200, 200),
 
-    "color_i": (81, 225, 252)
+    "I": (81, 225, 252),
+    "O": (254, 248, 76),
+    "T": (148, 54, 146),
+    "J": (71, 121, 212),
+    "L": (246, 146, 48),
+    "S": (233, 61, 30),
+    "Z": (121, 174, 61)
+
 }
 
 pieces_coords: dict[str, list[list[int]]] = {
@@ -155,6 +163,12 @@ class TileMap:
         return Piece(type ,pieces_coords[type])
 
 
+def choose_piece() -> str:
+    pieces: list[str] = ["I", "O", "L", "J", "S", "Z"]
+
+    return random.choice(pieces)
+
+
 def main() -> None:
     pygame.init()
 
@@ -208,7 +222,8 @@ def main() -> None:
 
         # Se não houver peça ativa, desenhe ela
         if not have_active_piece:
-            piece = game_grid.add_piece("Z")
+            piece_type: str = choose_piece()
+            piece = game_grid.add_piece(piece_type)
             have_active_piece = True
 
         # Desenhando os quadrados
@@ -218,7 +233,7 @@ def main() -> None:
 
                 # Cores dos quadradinhos
                 if tile_type != 0:
-                    pygame.draw.rect(screen, colors['color_i'], tile)
+                    pygame.draw.rect(screen, colors[piece.type], tile)
 
                 # Desenha a borda
                 pygame.draw.rect(screen, colors['block_area_line'], tile, width=1)
