@@ -1,5 +1,6 @@
 from constants import PIECES_COORDS
 
+
 class Piece:
     def __init__(self, type: str = "", coords: list[list[int]] = [[0, 0]]) -> None:
         self.type = type
@@ -120,6 +121,7 @@ class TileMap:
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     ]
+
 
     def clear_matrix(self) -> None:
         for row in range(20):
