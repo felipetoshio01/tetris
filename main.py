@@ -1,10 +1,13 @@
 import pygame
+from modules.tile_map import TileMap
 
 colors: dict[str, tuple[int, int, int]] = {
     "bg_color": (27, 27, 27),
     "bg_block_area_color": (40, 40, 40),
     "block_area_line": (200, 200, 200)
 }
+
+game_grid: TileMap = TileMap()
 
 def main() -> None:
     pygame.init()
@@ -32,8 +35,8 @@ def main() -> None:
         screen.fill(colors['bg_color'])
         pygame.draw.rect(screen, colors['bg_block_area_color'], blocks_area)
 
-        for y in range(20):
-            for x in range(10):
+        for y, row in enumerate(game_grid.matrix):
+            for x, tile in enumerate(row):
                 tile = pygame.Rect(x * 25 + 25, y * 25 + 70, 25, 25)
                 pygame.draw.rect(screen, colors['block_area_line'], tile, width=1)
 
