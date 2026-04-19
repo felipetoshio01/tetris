@@ -1,171 +1,13 @@
 import pygame
 import random
 
-colors: dict[str, tuple[int, int, int]] = {
-    "bg_color": (27, 27, 27),
-    "bg_block_area_color": (40, 40, 40),
-    "block_area_line": (200, 200, 200),
-
-    "I": (81, 225, 252),
-    "O": (254, 248, 76),
-    "T": (148, 54, 146),
-    "J": (71, 121, 212),
-    "L": (246, 146, 48),
-    "S": (233, 61, 30),
-    "Z": (121, 174, 61)
-
-}
-
-pieces_coords: dict[str, list[list[int]]] = {
-    "I": [[0, 3], [0, 4], [0, 5], [0, 6]],
-    "O": [[0, 4], [0, 5], [1, 4], [1, 5]],
-    "T": [[0, 4], [1, 3], [1, 4], [1, 5]],
-    "J": [[0, 3], [1, 3], [1, 4], [1, 5]],
-    "L": [[0, 5], [1, 3], [1, 4], [1, 5]],
-    "S": [[0, 4], [0, 5], [1, 3], [1, 4]],
-    "Z": [[0, 3], [0, 4], [1, 4], [1, 5]]
-}
-
-class Piece:
-    def __init__(self, type: str = "", coords: list[list[int]] = [[0, 0]]) -> None:
-        self.type = type
-        self.coords = coords
-
-    def is_valid_down(self) -> bool:
-        for coord in self.coords:
-            row = coord[0]
-
-            if row >= 19:
-                return False
-
-        return True
-    
-
-    def is_valid_left(self) -> bool:
-        for coord in self.coords:
-            column = coord[1]
-
-            if column == 0:
-                return False
-
-        return True
-    
-
-    def is_valid_right(self) -> bool:
-        for coord in self.coords:
-            column = coord[1]
-
-            if column == 9:
-                return False
-
-        return True
-
-
-    def remove_piece(self, map: "TileMap") -> None:
-        for coord in self.coords:
-            row, column = coord
-
-            # Transforma tudo em 0
-            map.matrix[row][column] = 0
-
-
-    def move_down(self, map: "TileMap") -> None:
-        # Se não for válido o movimento para baixo
-        if not self.is_valid_down():
-            return
-
-        # Remove a posição da peça anterior
-        self.remove_piece(map)
-
-        for index, coord in enumerate(self.coords):
-            row, column = coord
-            
-            # Atualiza as coordenadas
-            self.coords[index][0] += 1
-
-            # Preenche a próxima row
-            map.matrix[row + 1][column] = self.type
-
-
-    def move_left(self, map: "TileMap") -> None:
-        # Se não for válido o movimento a esquerda
-        if not self.is_valid_left():
-            return
-
-        # Remove a posição da peça anterior
-        self.remove_piece(map)
-
-        for index, coord in enumerate(self.coords):
-            row, column = coord
-            
-            # Atualiza as coordenadas
-            self.coords[index][1] -= 1
-
-            # Preenche a column da esquerda
-            map.matrix[row][column - 1] = self.type
-
-
-    def move_right(self, map: "TileMap") -> None:
-        # Se não for válido o movimento para a direita
-        if not self.is_valid_right():
-            return
-        
-        # Remove a posição da peça anterior
-        self.remove_piece(map)
-
-        for index, coord in enumerate(self.coords):
-            row, column = coord
-            
-            # Atualiza as coordenadas
-            self.coords[index][1] += 1
-
-            # Preenche a column da direita
-            map.matrix[row][column + 1] = self.type
-
-
-class TileMap: 
-    matrix: list[list] = [
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    ]
-
-    def clear_matrix(self) -> None:
-        for row in range(20):
-            for column in range(10):
-                self.matrix[row][column] = 0
-
-
-    def add_piece(self, type: str) -> Piece:
-
-        # Obtêm as coordenadas da peça escolhida
-        for coord in pieces_coords[type]:
-            row, column = coord
-            self.matrix[row][column] = type
-
-        return Piece(type ,pieces_coords[type])
+from engine import TileMap, Piece
+from constants import COLORS
 
 
 def choose_piece() -> str:
     pieces: list[str] = ["I", "O", "L", "J", "S", "Z"]
-
+    
     return random.choice(pieces)
 
 
@@ -217,8 +59,8 @@ def main() -> None:
 
 
         # ================== DESENHOS ==================
-        screen.fill(colors['bg_color'])
-        pygame.draw.rect(screen, colors['bg_block_area_color'], blocks_area)
+        screen.fill(COLORS['bg_color'])
+        pygame.draw.rect(screen, COLORS['bg_block_area_color'], blocks_area)
 
         # Se não houver peça ativa, desenhe ela
         if not have_active_piece:
@@ -233,10 +75,10 @@ def main() -> None:
 
                 # Cores dos quadradinhos
                 if tile_type != 0:
-                    pygame.draw.rect(screen, colors[piece.type], tile)
+                    pygame.draw.rect(screen, COLORS[piece.type], tile)
 
                 # Desenha a borda
-                pygame.draw.rect(screen, colors['block_area_line'], tile, width=1)
+                pygame.draw.rect(screen, COLORS['block_area_line'], tile, width=1)
 
         pygame.display.flip()
 
