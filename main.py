@@ -48,10 +48,12 @@ class Game:
 
 
     def _handle_move_down(self):
+        # Se a peça atingiu uma coisa
         if self.piece.hit_ground():
             self.piece.fix_piece()
             self.have_active_piece = False     
 
+        # Senão, desça normal
         else:
             self.piece.move_down()
 
@@ -78,7 +80,7 @@ class Game:
                 tile = pygame.Rect(x * 25 + 25, y * 25 + 70, 25, 25)
 
                 # Cores dos quadradinhos
-                if tile_type != 0:
+                if tile_type != "0":
                     pygame.draw.rect(self.screen, COLORS[tile_type], tile)
 
                 # Desenha a borda

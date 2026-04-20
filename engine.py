@@ -42,7 +42,7 @@ class Piece:
             row, column = coord
 
             # Transforma tudo em 0
-            self.map.matrix[row][column] = 0
+            self.map.matrix[row][column] = "0"
 
 
     def fix_piece(self) -> None:
@@ -122,39 +122,20 @@ class Piece:
 class TileMap: 
 
     def __init__(self) -> None:
-        self.matrix: list[list] = [
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        ]
-    
+        self.matrix: list[list[str]] = [["0" for _ in range(10)] for _ in range(20)]
+        
+
     def clear_matrix(self) -> None:
         for row in range(20):
             for column in range(10):
-                self.matrix[row][column] = 0
+                self.matrix[row][column] = "0"
 
     
     def add_piece(self, type: str) -> Piece:
+        # Obtêm as coordenadas da peça escolhida
         coords: list[list[int]] = [list(coord) for coord in PIECES_COORDS[type]]
 
-        # Obtêm as coordenadas da peça escolhida
+        # Desenha na matrix
         for coord in coords:
             row, column = coord
             self.matrix[row][column] = type
