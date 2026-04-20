@@ -18,10 +18,11 @@ class Game:
         self.game_grid: TileMap = TileMap()
         self.have_active_piece: bool = False
         self.piece: Piece
+        self.pieces_poll: list[str] = []
 
         # Timers
         self.MOVE_DOWN = pygame.USEREVENT + 1
-        pygame.time.set_timer(self.MOVE_DOWN, 100)
+        pygame.time.set_timer(self.MOVE_DOWN, 800)
 
 
     def _handle_events(self) -> None:
@@ -47,7 +48,7 @@ class Game:
                     self._handle_move_down()
 
 
-    def _handle_move_down(self):
+    def _handle_move_down(self) -> None: 
         # Se a peça atingiu uma coisa
         if self.piece.hit_ground():
             self.piece.fix_piece()
@@ -58,10 +59,25 @@ class Game:
             self.piece.move_down()
 
 
+    def _shuffle_new_pieces(self) -> None:
+        pieces: list[str] = ["I", "O", "L", "J", "S", "Z"]
+        self.pieces_poll = random.sample(pieces, 6)
+
+
+    def _choose_piece(self) -> str:
+        # Se não houver mais peças, crie uma nova lista
+        if not self.pieces_poll:
+            self._shuffle_new_pieces()
+
+        selected_piece: str = self.pieces_poll.pop()
+
+        return selected_piece
+
+
     def _update(self) -> None:
         # Se não houver peça ativa, desenhe ela
         if not self.have_active_piece:
-            piece_type: str = choose_piece()
+            piece_type: str = self._choose_piece()
             self.piece = self.game_grid.add_piece(piece_type)
             self.have_active_piece = True
 
@@ -97,12 +113,6 @@ class Game:
             self.clock.tick(60)
         
         pygame.quit()
-
-
-def choose_piece() -> str:
-    pieces: list[str] = ["I", "O", "L", "J", "S", "Z"]
-
-    return random.choice(pieces)
 
 
 if __name__ == '__main__':

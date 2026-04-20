@@ -19,9 +19,12 @@ class Piece:
 
     def is_valid_left(self) -> bool:
         for coord in self.coords:
-            column = coord[1]
+            row, column = coord
 
             if column == 0:
+                return False
+            
+            elif "#" in self.map.matrix[row][column - 1]:
                 return False
 
         return True
@@ -29,9 +32,12 @@ class Piece:
 
     def is_valid_right(self) -> bool:
         for coord in self.coords:
-            column = coord[1]
+            row, column = coord
 
             if column == 9:
+                return False
+            
+            elif "#" in self.map.matrix[row][column + 1]:
                 return False
 
         return True
@@ -59,7 +65,7 @@ class Piece:
             if row == 19:
                 return True
             
-            elif "#" in str(self.map.matrix[row + 1][column]):
+            elif "#" in self.map.matrix[row + 1][column]:
                 return True
 
         return False
@@ -123,7 +129,7 @@ class TileMap:
 
     def __init__(self) -> None:
         self.matrix: list[list[str]] = [["0" for _ in range(10)] for _ in range(20)]
-        
+
 
     def clear_matrix(self) -> None:
         for row in range(20):
