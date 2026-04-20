@@ -26,6 +26,9 @@ class Game:
 
 
     def _handle_events(self) -> None:
+        """
+        Cuida dos eventos do *Game Loop*
+        """
         for event in pygame.event.get():
 
             # Saída do jogo
@@ -48,7 +51,12 @@ class Game:
                     self._handle_move_down()
 
 
-    def _handle_move_down(self) -> None: 
+    def _handle_move_down(self) -> None:
+        """
+        Faz o movimento da `Piece` descer dentro do `TileMap`.
+        Se a `Piece` atingiu o chão ou outra peça, fixe ela
+        """
+
         # Se a peça atingiu uma coisa
         if self.piece.hit_ground():
             self.piece.fix_piece()
@@ -60,11 +68,20 @@ class Game:
 
 
     def _shuffle_new_pieces(self) -> None:
+        """
+        Reembaralha a `Game.pieces_poll`
+        """
+
         pieces: list[str] = ["I", "O", "L", "J", "S", "Z"]
         self.pieces_poll = random.sample(pieces, 6)
 
 
     def _choose_piece(self) -> str:
+        """
+        Seleciona uma peça dentro do `Game.pieces_poll`. 
+        Se a lista estiver vazia, será criado uma nova e escolhido um novo elemento dessa nova lista
+        """
+
         # Se não houver mais peças, crie uma nova lista
         if not self.pieces_poll:
             self._shuffle_new_pieces()
@@ -75,6 +92,10 @@ class Game:
 
 
     def _update(self) -> None:
+        """
+        Atualiza todo a lógica do *Game Loop*
+        """
+
         # Se não houver peça ativa, desenhe ela
         if not self.have_active_piece:
             piece_type: str = self._choose_piece()
@@ -83,6 +104,10 @@ class Game:
 
 
     def _draw(self) -> None:
+        """
+        Atualiza de desenha todos os elementos da tela
+        """
+
         # Limpa a tela
         self.screen.fill(COLORS['bg_color'])
 
@@ -106,6 +131,10 @@ class Game:
 
 
     def run(self) -> None:
+        """
+        Instancia o *Game Loop*
+        """
+
         while self.running:
             self._handle_events()
             self._update()

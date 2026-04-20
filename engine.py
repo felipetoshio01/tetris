@@ -7,7 +7,11 @@ class Piece:
         self.type = type
         self.coords = coords
 
-    def is_valid_down(self) -> bool:
+    def _is_valid_down(self) -> bool:
+        """
+        Retorna **True** se o movimento para baixo da `Piece` for possível. Caso contrário, retorna **False**
+        """
+
         for coord in self.coords:
             row = coord[0]
 
@@ -17,7 +21,11 @@ class Piece:
         return True
     
 
-    def is_valid_left(self) -> bool:
+    def _is_valid_left(self) -> bool:
+        """
+        Retorna **True** se o movimento para a esquerda da `Piece` for possível. Caso contrário, retorna **False**
+        """
+
         for coord in self.coords:
             row, column = coord
 
@@ -30,7 +38,11 @@ class Piece:
         return True
     
 
-    def is_valid_right(self) -> bool:
+    def _is_valid_right(self) -> bool:
+        """
+        Retorna **True** se o movimento para a direita da `Piece` for possível. Caso contrário, retorna **False**
+        """
+
         for coord in self.coords:
             row, column = coord
 
@@ -43,7 +55,11 @@ class Piece:
         return True
 
 
-    def remove_piece(self) -> None:
+    def _remove_piece(self) -> None:
+        """
+        Remove a `Piece` do `TileMap.matrix`, transformando suas coordenadas em **"0"**
+        """
+
         for coord in self.coords:
             row, column = coord
 
@@ -52,6 +68,10 @@ class Piece:
 
 
     def fix_piece(self) -> None:
+        """
+        Transforma um `Piece` móvel numa estática, adicionando um **#** às suas coordenadas
+        """
+
         for coord in self.coords:
             row, column = coord
 
@@ -59,6 +79,10 @@ class Piece:
 
 
     def hit_ground(self) -> bool:
+        """
+        Se uma `Piece` atingiu o chão do `TileMap.matrix` (**row 19**) ou se seu próximo `Piece.move_down()` atingiria uma peça estática (**#**), retorna **True**. Caso contrário, retorna **False**
+        """
+
         for coord in self.coords:
             row, column = coord
 
@@ -72,12 +96,16 @@ class Piece:
 
 
     def move_down(self) -> None:
+        """
+        Move cada coordenada da `Piece` para uma **row** abaixo, se o movimento for possível
+        """
+
         # Se não for válido o movimento para baixo
-        if not self.is_valid_down():
+        if not self._is_valid_down():
             return
 
         # Remove a posição da peça anterior
-        self.remove_piece()
+        self._remove_piece()
 
         for index, coord in enumerate(self.coords):
             row, column = coord
@@ -90,12 +118,16 @@ class Piece:
 
 
     def move_left(self) -> None:
+        """
+        Move cada coordenada da `Piece` para uma **column** à esquerda, se o movimento for possível
+        """
+
         # Se não for válido o movimento a esquerda
-        if not self.is_valid_left():
+        if not self._is_valid_left():
             return
 
         # Remove a posição da peça anterior
-        self.remove_piece()
+        self._remove_piece()
 
         for index, coord in enumerate(self.coords):
             row, column = coord
@@ -108,12 +140,16 @@ class Piece:
 
 
     def move_right(self) -> None:
+        """
+        Move cada coordenada da `Piece` para uma **column** à direita, se o movimento for possível
+        """
+
         # Se não for válido o movimento para a direita
-        if not self.is_valid_right():
+        if not self._is_valid_right():
             return
         
         # Remove a posição da peça anterior
-        self.remove_piece()
+        self._remove_piece()
 
         for index, coord in enumerate(self.coords):
             row, column = coord
@@ -132,12 +168,19 @@ class TileMap:
 
 
     def clear_matrix(self) -> None:
+        """
+        Transforma cada elemento do `TileMap.matrix` em **"0"**
+        """
         for row in range(20):
             for column in range(10):
                 self.matrix[row][column] = "0"
 
     
     def add_piece(self, type: str) -> Piece:
+        """
+        Retorna uma nova `Piece` com o tipo especificado e adiciona ela no `TileMap.matrix`. Os tipos devem ser **"I", "O", "S", "Z", "L" ou "J"**
+        """
+
         # Obtêm as coordenadas da peça escolhida
         coords: list[list[int]] = [list(coord) for coord in PIECES_COORDS[type]]
 
