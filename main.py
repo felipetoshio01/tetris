@@ -22,7 +22,7 @@ class Game:
 
         # Timers
         self.MOVE_DOWN = pygame.USEREVENT + 1
-        pygame.time.set_timer(self.MOVE_DOWN, 800)
+        pygame.time.set_timer(self.MOVE_DOWN, 400)
 
 
     def _handle_events(self) -> None:
@@ -45,6 +45,16 @@ class Game:
                     # Direita
                     if event.key == pygame.K_RIGHT:
                         self.piece.move_right()
+
+                    # Rotaciona para a esquerda
+                    if event.key == pygame.K_z:
+                        self.piece.rotate("left")
+                    
+                    # Rotaciona para a direita
+                    if event.key == pygame.K_x:
+                        self.piece.rotate("right")
+
+
                 
                 # Desce a peça
                 if event.type == self.MOVE_DOWN:
@@ -54,7 +64,7 @@ class Game:
     def _handle_move_down(self) -> None:
         """
         Faz o movimento da `Piece` descer dentro do `TileMap`.
-        Se a `Piece` atingiu o chão ou outra peça, fixe ela
+        Se a `Piece` atingiu o chão ou outra peça, fixe ela (`Piece.fix_piece()`)
         """
 
         # Se a peça atingiu uma coisa
@@ -72,7 +82,7 @@ class Game:
         Reembaralha a `Game.pieces_poll`
         """
 
-        pieces: list[str] = ["I", "O", "L", "J", "S", "Z"]
+        pieces: list[str] = ["I", "T", "O", "L", "J", "S", "Z"]
         self.pieces_poll = random.sample(pieces, 6)
 
 
@@ -105,7 +115,7 @@ class Game:
 
     def _draw(self) -> None:
         """
-        Atualiza de desenha todos os elementos da tela
+        Atualiza e desenha todos os elementos da tela
         """
 
         # Limpa a tela

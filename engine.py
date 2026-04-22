@@ -1,11 +1,16 @@
-from constants import PIECES_COORDS
+from constants import PIECES_COORDS, PIECES_ROTATIONS
 
 
 class Piece:
-    def __init__(self, map: "TileMap",type: str = "", coords: list[list[int]] = [[0, 0]]) -> None:
+    def __init__(self, map: "TileMap", type: str) -> None:
         self.map = map
         self.type = type
-        self.coords = coords
+        self.coords = [list(coord) for coord in PIECES_COORDS[type]]
+        self.piece_rotations = PIECES_ROTATIONS[type]
+        self.rotation = 0
+        self.row_offset = 0
+        self.column_offset = 0
+
 
     def _is_valid_down(self) -> bool:
         """
@@ -69,7 +74,7 @@ class Piece:
 
     def fix_piece(self) -> None:
         """
-        Transforma um `Piece` móvel numa estática, adicionando um **#** às suas coordenadas
+        Transforma um `Piece` móvel numa estática, adicionando um **"#"** às suas coordenadas
         """
 
         for coord in self.coords:
@@ -115,6 +120,8 @@ class Piece:
 
             # Preenche a próxima row
             self.map.matrix[row + 1][column] = self.type
+        
+        self.row_offset += 1
 
 
     def move_left(self) -> None:
@@ -137,6 +144,8 @@ class Piece:
 
             # Preenche a column da esquerda
             self.map.matrix[row][column - 1] = self.type
+        
+        self.column_offset -= 1
 
 
     def move_right(self) -> None:
@@ -159,10 +168,49 @@ class Piece:
 
             # Preenche a column da direita
             self.map.matrix[row][column + 1] = self.type
+        
+        self.column_offset += 1
+
+
+    def rotate(self, direction: str = "right") -> None:
+        """
+        Rotaciona a `Piece` para a `direction` desejada. O parâmetro `direction` deve ser **"right"** ou **"left"**.
+        """
+        if self.type == "O" or direction != "right" or direction != "left":
+            return
+
+        # Direita
+        if direction == "right":
+            self.rotation += 1
+
+        # Esquerda
+        else:
+            self.rotation -= 1
+        
+        # Obtêm a orientação
+        orientation: int = self.rotation % 4
+
+        # Remove a peça anterior
+        self._remove_piece()
+
+        # Descoloca a peça base para sua posição
+        for index, base_coord in enumerate(self.piece_rotations[orientation]):
+            self.coords[index][0] = base_coord[0] + self.row_offset
+            self.coords[index][1] = base_coord[1] + self.column_offset
+        
+        # Atualiza
+        for coord in self.coords:
+            row, column = coord
+            self.map.matrix[row][column] = self.type
+
+    
+    def rotate_left(self) -> None:
+        self.rotation -= 1
+        orientation: int = self.rotation % 4
+        print(orientation)
 
 
 class TileMap: 
-
     def __init__(self) -> None:
         self.matrix: list[list[str]] = [["0" for _ in range(10)] for _ in range(20)]
 
@@ -181,12 +229,9 @@ class TileMap:
         Retorna uma nova `Piece` com o tipo especificado e adiciona ela no `TileMap.matrix`. Os tipos devem ser **"I", "O", "S", "Z", "L" ou "J"**
         """
 
-        # Obtêm as coordenadas da peça escolhida
-        coords: list[list[int]] = [list(coord) for coord in PIECES_COORDS[type]]
-
         # Desenha na matrix
-        for coord in coords:
+        for coord in PIECES_COORDS[type]:
             row, column = coord
             self.matrix[row][column] = type
 
-        return Piece(self, type, coords)
+        return Piece(self, type)
