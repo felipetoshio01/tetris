@@ -12,49 +12,33 @@ class Piece:
         self.column_offset = 0
 
 
-    def _is_valid_down(self) -> bool:
-        """
-        Retorna **True** se o movimento para baixo da `Piece` for possível. Caso contrário, retorna **False**
-        """
+    def _is_valide_vertical(self, moves: int) -> bool:
 
         for coord in self.coords:
-            row = coord[0]
+            row, column = coord
 
-            if row >= 19:
+            if (row + moves < 0 and moves < 0) or (row + moves > 19 and moves > 0):
                 return False
 
+            if "#" in self.map.matrix[row + moves][column]:
+                return False
+        
         return True
-    
 
-    def _is_valid_left(self) -> bool:
+
+    def _is_valid_horizontal(self, moves: int) -> bool:
         """
-        Retorna **True** se o movimento para a esquerda da `Piece` for possível. Caso contrário, retorna **False**
+        Determina se um movimento horizontal de determinada quantidade de casas (`moves`) é válido ou não. Caso seja válido, retorna **True**, senão **False**.
+        Movimentos positivos são para a direita, enquanto negativos para a esquerda
         """
 
         for coord in self.coords:
             row, column = coord
 
-            if column == 0:
+            if (column + moves < 0 and moves < 0) or (column + moves > 9 and moves > 0):
                 return False
             
-            elif "#" in self.map.matrix[row][column - 1]:
-                return False
-
-        return True
-    
-
-    def _is_valid_right(self) -> bool:
-        """
-        Retorna **True** se o movimento para a direita da `Piece` for possível. Caso contrário, retorna **False**
-        """
-
-        for coord in self.coords:
-            row, column = coord
-
-            if column == 9:
-                return False
-            
-            elif "#" in self.map.matrix[row][column + 1]:
+            elif "#" in self.map.matrix[row][column + moves]:
                 return False
 
         return True
@@ -100,13 +84,13 @@ class Piece:
         return False
 
 
-    def move_down(self) -> None:
+    def move_down(self, quantity: int) -> None:
         """
         Move cada coordenada da `Piece` para uma **row** abaixo, se o movimento for possível
         """
 
         # Se não for válido o movimento para baixo
-        if not self._is_valid_down():
+        if not self._is_valide_vertical(quantity):
             return
 
         # Remove a posição da peça anterior
@@ -116,21 +100,41 @@ class Piece:
             row, column = coord
             
             # Atualiza as coordenadas
-            self.coords[index][0] += 1
+            self.coords[index][0] += quantity
 
             # Preenche a próxima row
-            self.map.matrix[row + 1][column] = self.type
+            self.map.matrix[row + quantity][column] = self.type
         
-        self.row_offset += 1
+        self.row_offset += quantity
 
 
-    def move_left(self) -> None:
+    def move_up(self, quantity: int) -> None:
+        # Se não for válido o movimento para baixo
+        if not self._is_valide_vertical(-quantity):
+            return
+
+        # Remove a posição da peça anterior
+        self._remove_piece()
+
+        for index, coord in enumerate(self.coords):
+            row, column = coord
+            
+            # Atualiza as coordenadas
+            self.coords[index][0] -= quantity
+
+            # Preenche a próxima row
+            self.map.matrix[row - quantity][column] = self.type
+        
+        self.row_offset -= quantity
+
+
+    def move_left(self, quantity: int) -> None:
         """
         Move cada coordenada da `Piece` para uma **column** à esquerda, se o movimento for possível
         """
 
         # Se não for válido o movimento a esquerda
-        if not self._is_valid_left():
+        if not self._is_valid_horizontal(-quantity):
             return
 
         # Remove a posição da peça anterior
@@ -140,21 +144,21 @@ class Piece:
             row, column = coord
             
             # Atualiza as coordenadas
-            self.coords[index][1] -= 1
+            self.coords[index][1] -= quantity
 
             # Preenche a column da esquerda
-            self.map.matrix[row][column - 1] = self.type
+            self.map.matrix[row][column - quantity] = self.type
         
-        self.column_offset -= 1
+        self.column_offset -= quantity
 
 
-    def move_right(self) -> None:
+    def move_right(self, quantity: int) -> None:
         """
         Move cada coordenada da `Piece` para uma **column** à direita, se o movimento for possível
         """
 
         # Se não for válido o movimento para a direita
-        if not self._is_valid_right():
+        if not self._is_valid_horizontal(quantity):
             return
         
         # Remove a posição da peça anterior
@@ -164,19 +168,19 @@ class Piece:
             row, column = coord
             
             # Atualiza as coordenadas
-            self.coords[index][1] += 1
+            self.coords[index][1] += quantity
 
             # Preenche a column da direita
-            self.map.matrix[row][column + 1] = self.type
+            self.map.matrix[row][column + quantity] = self.type
         
-        self.column_offset += 1
+        self.column_offset += quantity
 
 
-    def rotate(self, direction: str = "right") -> None:
+    def rotate(self, direction: str) -> None:
         """
         Rotaciona a `Piece` para a `direction` desejada. O parâmetro `direction` deve ser **"right"** ou **"left"**.
         """
-        if self.type == "O" or direction != "right" or direction != "left":
+        if self.type == "O":
             return
 
         # Direita
@@ -226,7 +230,7 @@ class TileMap:
     
     def add_piece(self, type: str) -> Piece:
         """
-        Retorna uma nova `Piece` com o tipo especificado e adiciona ela no `TileMap.matrix`. Os tipos devem ser **"I", "O", "S", "Z", "L" ou "J"**
+        Retorna uma nova `Piece` com o tipo especificado e adiciona ela no `TileMap.matrix`. Os tipos devem ser **"I", "O", "S", "Z", "L"** ou **"J"**
         """
 
         # Desenha na matrix

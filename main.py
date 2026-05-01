@@ -40,11 +40,11 @@ class Game:
                 if event.type == pygame.KEYDOWN:              
                     # Esquerda
                     if event.key == pygame.K_LEFT:
-                        self.piece.move_left()
+                        self.piece.move_left(1)
 
                     # Direita
                     if event.key == pygame.K_RIGHT:
-                        self.piece.move_right()
+                        self.piece.move_right(1)
 
                     # Rotaciona para a esquerda
                     if event.key == pygame.K_z:
@@ -53,9 +53,7 @@ class Game:
                     # Rotaciona para a direita
                     if event.key == pygame.K_x:
                         self.piece.rotate("right")
-
-
-                
+            
                 # Desce a peça
                 if event.type == self.MOVE_DOWN:
                     self._handle_move_down()
@@ -74,7 +72,7 @@ class Game:
 
         # Senão, desça normal
         else:
-            self.piece.move_down()
+            self.piece.move_down(1)
 
 
     def _shuffle_new_pieces(self) -> None:
