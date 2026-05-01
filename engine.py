@@ -1,32 +1,47 @@
-from constants import PIECES_COORDS, PIECES_ROTATIONS
-
+from constants import (
+    PIECES_COORDS,
+    PIECES_ROTATIONS,
+    WALL_KICK_DATA,
+    I_WALL_KICK_DATA
+)
 
 class Piece:
     def __init__(self, map: "TileMap", type: str) -> None:
         self.map = map
         self.type = type
+
         self.coords = [list(coord) for coord in PIECES_COORDS[type]]
         self.piece_rotations = PIECES_ROTATIONS[type]
+        self.wall_kick_data = WALL_KICK_DATA if type != "I" else I_WALL_KICK_DATA
+
         self.rotation = 0
         self.row_offset = 0
         self.column_offset = 0
 
 
-    def _is_valide_vertical(self, moves: int) -> bool:
+    def _can_move_vertical(self, moves: int) -> bool:
+        """
+        Determina se um movimento vertical de determinada quantidade de casas (`moves`) é válido ou não. Caso seja válido, retorna **True**, senão **False**.
+        Movimentos positivos são para baixo, enquanto negativos para cima
+        """
 
         for coord in self.coords:
             row, column = coord
 
+            if (row < 0 or row > 19) and moves == 0:
+                return False
+
             if (row + moves < 0 and moves < 0) or (row + moves > 19 and moves > 0):
                 return False
 
+            #FIXME
             if "#" in self.map.matrix[row + moves][column]:
                 return False
         
         return True
 
 
-    def _is_valid_horizontal(self, moves: int) -> bool:
+    def _can_move_horizontal(self, moves: int) -> bool:
         """
         Determina se um movimento horizontal de determinada quantidade de casas (`moves`) é válido ou não. Caso seja válido, retorna **True**, senão **False**.
         Movimentos positivos são para a direita, enquanto negativos para a esquerda
@@ -34,6 +49,9 @@ class Piece:
 
         for coord in self.coords:
             row, column = coord
+
+            if (column < 0 or column > 9) and moves == 0:
+                return False
 
             if (column + moves < 0 and moves < 0) or (column + moves > 9 and moves > 0):
                 return False
@@ -90,7 +108,7 @@ class Piece:
         """
 
         # Se não for válido o movimento para baixo
-        if not self._is_valide_vertical(quantity):
+        if not self._can_move_vertical(quantity):
             return
 
         # Remove a posição da peça anterior
@@ -110,7 +128,7 @@ class Piece:
 
     def move_up(self, quantity: int) -> None:
         # Se não for válido o movimento para baixo
-        if not self._is_valide_vertical(-quantity):
+        if not self._can_move_vertical(-quantity):
             return
 
         # Remove a posição da peça anterior
@@ -134,7 +152,7 @@ class Piece:
         """
 
         # Se não for válido o movimento a esquerda
-        if not self._is_valid_horizontal(-quantity):
+        if not self._can_move_horizontal(-quantity):
             return
 
         # Remove a posição da peça anterior
@@ -158,7 +176,7 @@ class Piece:
         """
 
         # Se não for válido o movimento para a direita
-        if not self._is_valid_horizontal(quantity):
+        if not self._can_move_horizontal(quantity):
             return
         
         # Remove a posição da peça anterior
@@ -183,35 +201,82 @@ class Piece:
         if self.type == "O":
             return
 
-        # Direita
-        if direction == "right":
-            self.rotation += 1
-
-        # Esquerda
-        else:
-            self.rotation -= 1
+        new_rotation = self.rotation + 1 if direction == "right" else self.rotation - 1
         
         # Obtêm a orientação
-        orientation: int = self.rotation % 4
+        orientation: int = new_rotation % 4
 
-        # Remove a peça anterior
-        self._remove_piece()
+        # Obtêm as coordenadas novas, para testes
+        rotation_coords: list[list[int]] = []
 
-        # Descoloca a peça base para sua posição
         for index, base_coord in enumerate(self.piece_rotations[orientation]):
-            self.coords[index][0] = base_coord[0] + self.row_offset
-            self.coords[index][1] = base_coord[1] + self.column_offset
+            coord = [base_coord[0] + self.row_offset, base_coord[1] + self.column_offset]
+            rotation_coords.append(coord)
         
-        # Atualiza
-        for coord in self.coords:
-            row, column = coord
-            self.map.matrix[row][column] = self.type
+        rotation_result = self._get_rotation_kick(orientation, rotation_coords)
 
+        # Se houve sucesso (não for lista vazia)
+        if rotation_result:
+            row_kick, column_kick = rotation_result
+
+            # Adiciona o kick
+            self.row_offset += row_kick
+            self.column_offset += column_kick
+
+            # Remove a peça anterior
+            self._remove_piece()
+
+            # Descoloca a peça base para sua posição
+            for index, base_coord in enumerate(self.piece_rotations[orientation]):
+                self.coords[index][0] = base_coord[0] + self.row_offset
+                self.coords[index][1] = base_coord[1] + self.column_offset
+            
+            # Atualiza
+            for coord in self.coords:
+                row, column = coord
+                self.map.matrix[row][column] = self.type
+            
+            # Atualiza a rotação
+            self.rotation = new_rotation
+
+
+    def _get_rotation_kick(self, old_orientation: int ,piece_coords: list[list[int]]) -> list[int]:
+        """
+        Retorna uma lista **[y, x]** com os valores de deslocamento extra (*Wall kick*) necessário após a rotação. Se nenhum deslocamento for bem sucedido, retorna **[ ]**
+        """
+        new_orientation: int = (old_orientation + 1) % 4
+
+        wall_kick_values = self.wall_kick_data[f"{old_orientation}>{new_orientation}"]
+
+        for value in wall_kick_values:
+            row_add, column_add = value
+            
+            # Coordenadas de teste
+            test_coords = [[coord[0] + row_add, coord[1] + column_add] for coord in piece_coords]  
+         
+            if self._is_coords_valid(test_coords):
+                return list(value)
+
+        return []
+            
     
-    def rotate_left(self) -> None:
-        self.rotation -= 1
-        orientation: int = self.rotation % 4
-        print(orientation)
+    def _is_coords_valid(self, coords) -> bool:
+        """
+        Retorna **True** se um conjunto de coordenadas é válido. Senão, retorna **False**
+        """
+        for coord in coords:
+            row, column = coord
+
+            # Se está fora dos limites
+            if (column < 0 or column > 9) or (row < 0 or row > 19):
+                return False
+            
+            # Se coincide com uma peça fixa
+            elif "#" in self.map.matrix[row][column]:
+                return False
+        
+        return True
+
 
 
 class TileMap: 
