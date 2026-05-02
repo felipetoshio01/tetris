@@ -4,9 +4,11 @@ from constants import (
     WALL_KICK_DATA,
     I_WALL_KICK_DATA
 )
+from tile_map import TileMap
+
 
 class Piece:
-    def __init__(self, map: "TileMap", type: str) -> None:
+    def __init__(self, map: TileMap, type: str) -> None:
         self.map = map
         self.type = type
 
@@ -19,6 +21,17 @@ class Piece:
         self.column_offset = 0
 
 
+    def add_piece(self) -> None:
+        """
+        Adiciona uma nova `Piece` com o tipo especificado no `TileMap.matrix`. Os tipos devem ser **"I", "O", "S", "Z", "L"** ou **"J"**
+        """
+
+        # Desenha na matrix
+        for coord in PIECES_COORDS[self.type]:
+            row, column = coord
+            self.map.matrix[row][column] = self.type
+
+
     def _can_move_vertical(self, moves: int) -> bool:
         """
         Determina se um movimento vertical de determinada quantidade de casas (`moves`) é válido ou não. Caso seja válido, retorna **True**, senão **False**.
@@ -28,13 +41,9 @@ class Piece:
         for coord in self.coords:
             row, column = coord
 
-            if (row < 0 or row > 19) and moves == 0:
-                return False
-
             if (row + moves < 0 and moves < 0) or (row + moves > 19 and moves > 0):
                 return False
 
-            #FIXME
             if "#" in self.map.matrix[row + moves][column]:
                 return False
         
@@ -49,9 +58,6 @@ class Piece:
 
         for coord in self.coords:
             row, column = coord
-
-            if (column < 0 or column > 9) and moves == 0:
-                return False
 
             if (column + moves < 0 and moves < 0) or (column + moves > 9 and moves > 0):
                 return False
@@ -201,7 +207,7 @@ class Piece:
         if self.type == "O":
             return
 
-        new_rotation = self.rotation + 1 if direction == "right" else self.rotation - 1
+        new_rotation: int = self.rotation + 1 if direction == "right" else self.rotation - 1
         
         # Obtêm a orientação
         orientation: int = new_rotation % 4
@@ -213,7 +219,7 @@ class Piece:
             coord = [base_coord[0] + self.row_offset, base_coord[1] + self.column_offset]
             rotation_coords.append(coord)
         
-        rotation_result = self._get_rotation_kick(orientation, rotation_coords)
+        rotation_result: list[int] = self._get_rotation_kick(orientation, rotation_coords)
 
         # Se houve sucesso (não for lista vazia)
         if rotation_result:
@@ -240,10 +246,11 @@ class Piece:
             self.rotation = new_rotation
 
 
-    def _get_rotation_kick(self, old_orientation: int ,piece_coords: list[list[int]]) -> list[int]:
+    def _get_rotation_kick(self, old_orientation: int, piece_coords: list[list[int]]) -> list[int]:
         """
         Retorna uma lista **[y, x]** com os valores de deslocamento extra (*Wall kick*) necessário após a rotação. Se nenhum deslocamento for bem sucedido, retorna **[ ]**
         """
+
         new_orientation: int = (old_orientation + 1) % 4
 
         wall_kick_values = self.wall_kick_data[f"{old_orientation}>{new_orientation}"]
@@ -260,10 +267,11 @@ class Piece:
         return []
             
     
-    def _is_coords_valid(self, coords) -> bool:
+    def _is_coords_valid(self, coords: list[list[int]]) -> bool:
         """
         Retorna **True** se um conjunto de coordenadas é válido. Senão, retorna **False**
         """
+
         for coord in coords:
             row, column = coord
 
@@ -276,31 +284,3 @@ class Piece:
                 return False
         
         return True
-
-
-
-class TileMap: 
-    def __init__(self) -> None:
-        self.matrix: list[list[str]] = [["0" for _ in range(10)] for _ in range(20)]
-
-
-    def clear_matrix(self) -> None:
-        """
-        Transforma cada elemento do `TileMap.matrix` em **"0"**
-        """
-        for row in range(20):
-            for column in range(10):
-                self.matrix[row][column] = "0"
-
-    
-    def add_piece(self, type: str) -> Piece:
-        """
-        Retorna uma nova `Piece` com o tipo especificado e adiciona ela no `TileMap.matrix`. Os tipos devem ser **"I", "O", "S", "Z", "L"** ou **"J"**
-        """
-
-        # Desenha na matrix
-        for coord in PIECES_COORDS[type]:
-            row, column = coord
-            self.matrix[row][column] = type
-
-        return Piece(self, type)

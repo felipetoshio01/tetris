@@ -1,7 +1,8 @@
 import pygame
 import random
  
-from engine import TileMap, Piece
+from piece import Piece
+from tile_map import TileMap
 from constants import COLORS
 
 
@@ -81,7 +82,7 @@ class Game:
         """
 
         pieces: list[str] = ["I", "T", "O", "L", "J", "S", "Z"]
-        self.pieces_poll = random.sample(pieces, 6)
+        self.pieces_poll = random.sample(pieces, 7)
 
 
     def _choose_piece(self) -> str:
@@ -107,7 +108,8 @@ class Game:
         # Se não houver peça ativa, desenhe ela
         if not self.have_active_piece:
             piece_type: str = self._choose_piece()
-            self.piece = self.game_grid.add_piece(piece_type)
+            self.piece = Piece(self.game_grid, piece_type)
+            self.piece.add_piece()
             self.have_active_piece = True
 
 
