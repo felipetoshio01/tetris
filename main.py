@@ -65,10 +65,15 @@ class Game:
         Faz o movimento da `Piece` descer dentro do `TileMap`.
         Se a `Piece` atingiu o chão ou outra peça, fixe ela (`Piece.fix_piece()`)
         """
-
+        
         # Se a peça atingiu uma coisa
         if self.piece.hit_ground():
             self.piece.fix_piece()
+
+            if self.game_grid.get_complete_rows():
+                self.game_grid.delete_complete_rows()
+                self.game_grid.move_down_rows()
+
             self.have_active_piece = False     
 
         # Senão, desça normal
