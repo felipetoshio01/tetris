@@ -26,7 +26,7 @@ class TileMap:
         return True
     
 
-    def get_complete_rows(self) -> bool:
+    def _get_complete_rows(self) -> bool:
         """
         Adiciona o index de **rows** completas ao `TileMap.complete_rows`. Caso ele tenha obtido um **row** completa, retorna **True**, senão **False**
         """
@@ -41,7 +41,7 @@ class TileMap:
         return have_complete_rows
 
 
-    def delete_complete_rows(self) -> None:
+    def _delete_complete_rows(self) -> None:
         """
         Deleta cada **row** no `TileMap.complete_rows`
         """
@@ -51,19 +51,33 @@ class TileMap:
                 self.matrix[row][column] = "0"
 
 
-    def move_down_rows(self) -> None:
+    def _move_down_rows(self) -> None:
         """
-        Move cada **row** acima de uma **row** completa para baixo no `TileMap.matrix`. No final, limpa a lista `TileMap.complete_rows`
+        Move cada **row** acima de uma **row** completa para baixo no `TileMap.matrix`
         """
+
+        self.complete_rows.sort()
 
         for cleared_row in self.complete_rows:
 
             for index, row in enumerate(reversed(self.matrix)):
+                
+                # Corrige o index
                 row_index = 19 - index
 
+                # Pula as rows que estão a baixo da row limpa
                 if row_index >= cleared_row:
                     continue
 
                 self.matrix[row_index + 1] = row.copy()
 
-        self.complete_rows.clear()
+
+    def clear_complete_rows(self) -> None:
+        """
+        Faz a lógica completa de limpar **rows** completas. No final, limpa a `TileMap.complete_rows`
+        """
+
+        if self._get_complete_rows():
+            self._delete_complete_rows()
+            self._move_down_rows()
+            self.complete_rows.clear()

@@ -32,52 +32,11 @@ class Piece:
             self.map.matrix[row][column] = self.type
 
 
-    def _can_move_vertical(self, moves: int) -> bool:
+    def is_position_valid(self) -> bool:
         """
-        Determina se um movimento vertical de determinada quantidade de casas (`moves`) é válido ou não. Caso seja válido, retorna **True**, senão **False**.
-        Movimentos positivos são para baixo, enquanto negativos para cima
+        Verifica se as coordenadas da peça atual são válidas
         """
-
-        for coord in self.coords:
-            row, column = coord
-
-            if (row + moves < 0 and moves < 0) or (row + moves > 19 and moves > 0):
-                return False
-
-            if "#" in self.map.matrix[row + moves][column]:
-                return False
-        
-        return True
-
-
-    def _can_move_horizontal(self, moves: int) -> bool:
-        """
-        Determina se um movimento horizontal de determinada quantidade de casas (`moves`) é válido ou não. Caso seja válido, retorna **True**, senão **False**.
-        Movimentos positivos são para a direita, enquanto negativos para a esquerda
-        """
-
-        for coord in self.coords:
-            row, column = coord
-
-            if (column + moves < 0 and moves < 0) or (column + moves > 9 and moves > 0):
-                return False
-            
-            elif "#" in self.map.matrix[row][column + moves]:
-                return False
-
-        return True
-
-
-    def _remove_piece(self) -> None:
-        """
-        Remove a `Piece` do `TileMap.matrix`, transformando suas coordenadas em **"0"**
-        """
-
-        for coord in self.coords:
-            row, column = coord
-
-            # Transforma tudo em 0
-            self.map.matrix[row][column] = "0"
+        return self._is_coords_valid(self.coords)
 
 
     def fix_piece(self) -> None:
@@ -244,6 +203,54 @@ class Piece:
             
             # Atualiza a rotação
             self.rotation = new_rotation
+
+
+    def _can_move_vertical(self, moves: int) -> bool:
+        """
+        Determina se um movimento vertical de determinada quantidade de casas (`moves`) é válido ou não. Caso seja válido, retorna **True**, senão **False**.
+        Movimentos positivos são para baixo, enquanto negativos para cima
+        """
+
+        for coord in self.coords:
+            row, column = coord
+
+            if (row + moves < 0 and moves < 0) or (row + moves > 19 and moves > 0):
+                return False
+
+            if "#" in self.map.matrix[row + moves][column]:
+                return False
+        
+        return True
+
+
+    def _can_move_horizontal(self, moves: int) -> bool:
+        """
+        Determina se um movimento horizontal de determinada quantidade de casas (`moves`) é válido ou não. Caso seja válido, retorna **True**, senão **False**.
+        Movimentos positivos são para a direita, enquanto negativos para a esquerda
+        """
+
+        for coord in self.coords:
+            row, column = coord
+
+            if (column + moves < 0 and moves < 0) or (column + moves > 9 and moves > 0):
+                return False
+            
+            elif "#" in self.map.matrix[row][column + moves]:
+                return False
+
+        return True
+
+
+    def _remove_piece(self) -> None:
+        """
+        Remove a `Piece` do `TileMap.matrix`, transformando suas coordenadas em **"0"**
+        """
+
+        for coord in self.coords:
+            row, column = coord
+
+            # Transforma tudo em 0
+            self.map.matrix[row][column] = "0"
 
 
     def _get_rotation_kick(self, old_orientation: int, piece_coords: list[list[int]]) -> list[int]:

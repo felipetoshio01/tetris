@@ -70,10 +70,10 @@ class Game:
         if self.piece.hit_ground():
             self.piece.fix_piece()
 
-            if self.game_grid.get_complete_rows():
-                self.game_grid.delete_complete_rows()
-                self.game_grid.move_down_rows()
+            # Após fixar, limpe as linhas completas
+            self.game_grid.clear_complete_rows()
 
+            # Avisa que não tem uma peça ativa
             self.have_active_piece = False     
 
         # Senão, desça normal
@@ -114,6 +114,11 @@ class Game:
         if not self.have_active_piece:
             piece_type: str = self._choose_piece()
             self.piece = Piece(self.game_grid, piece_type)
+
+            # GAME OVER
+            if not self.piece.is_position_valid():
+                self.game_grid.clear_matrix()
+
             self.piece.add_piece()
             self.have_active_piece = True
 
