@@ -40,16 +40,16 @@ class Game:
             if self.have_active_piece:
                 if event.type == pygame.KEYDOWN:              
                     # Esquerda
-                    if event.key == pygame.K_LEFT:
+                    if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                         self.piece.move_left(1)
 
                     # Direita
-                    if event.key == pygame.K_RIGHT:
+                    if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                         self.piece.move_right(1)
 
                     # Rotaciona para a esquerda
                     if event.key == pygame.K_z:
-                        self.piece.rotate("left")
+                        self.piece.rotate("left")   
                     
                     # Rotaciona para a direita
                     if event.key == pygame.K_x:
@@ -131,9 +131,17 @@ class Game:
         # Limpa a tela
         self.screen.fill(COLORS['bg_color'])
 
-        # Cria a área dos bloquinhos
-        blocks_area: pygame.Rect = pygame.Rect(25, 70, 250, 500)
-        pygame.draw.rect(self.screen, COLORS['bg_block_area_color'], blocks_area)
+        # Desenha a área dos bloquinhos
+        self._draw_grid_board()        
+        self._draw_grid_lines()
+
+        pygame.display.flip()
+
+
+    def _draw_pieces(self) -> None:
+        """
+        Desenha cada tile do Game Grid
+        """
 
         # Desenhando os quadrados
         for y, row in enumerate(self.game_grid.matrix):
@@ -144,10 +152,45 @@ class Game:
                 if tile_type != "0":
                     pygame.draw.rect(self.screen, COLORS[tile_type], tile)
 
-                # Desenha a borda
-                pygame.draw.rect(self.screen, COLORS['block_area_line'], tile, width=1)
 
-        pygame.display.flip()
+    def _draw_grid_board(self) -> None:
+        """
+        Desenha o local onde as peças se mexem
+        """
+
+        border_width: int = 5
+
+        # Cria a área dos bloquinhos
+        blocks_area: pygame.Rect = pygame.Rect(25, 70, 250, 500)
+        pygame.draw.rect(self.screen, COLORS['bg_block_area_color'], blocks_area)
+
+        self._draw_pieces()
+        
+        blocks_area_border: pygame.Rect = pygame.Rect(
+            25 - border_width,
+            70 - border_width,
+            250 + 2 * border_width,
+            500 + 2 * border_width
+        )
+
+        pygame.draw.rect(
+            self.screen,
+            COLORS['block_area_border_color'], 
+            blocks_area_border, 
+            width=border_width, 
+            border_radius=15
+        )
+
+
+    def _draw_grid_lines(self) -> None:
+        """
+        Desenha as linhas do Game Grid
+        """
+        for y in range(19):
+            pygame.draw.line(self.screen, COLORS['block_area_line'], (25, y * 25 + 95), (275, y * 25 + 95))
+
+        for x in range(9):
+            pygame.draw.line(self.screen, COLORS['block_area_line'], (x * 25 + 50, 70), (x * 25 + 50, 570)) 
 
 
     def run(self) -> None:

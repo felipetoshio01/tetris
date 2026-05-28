@@ -1,7 +1,8 @@
 COLORS: dict[str, tuple[int, int, int]] = {
-    "bg_color": (27, 27, 27),
-    "bg_block_area_color": (40, 40, 40),
+    "bg_color": (82, 92, 168),
+    "bg_block_area_color": (19, 36, 87),
     "block_area_line": (200, 200, 200),
+    'block_area_border_color': (141, 152, 235),
 
     "I": (81, 225, 252),
     "O": (254, 248, 76),
