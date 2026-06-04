@@ -1,4 +1,8 @@
 class TileMap: 
+    """
+    Matrix 20x10 que conterá as informações para a região das peças
+    """
+
     def __init__(self) -> None:
         self.matrix: list[list[str]] = [["0" for _ in range(10)] for _ in range(20)]
         self.complete_rows: list[int] = []

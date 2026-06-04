@@ -1,13 +1,26 @@
+# ================== Configurações ================== 
 from settings.dicts import (
     PIECES_COORDS,
     PIECES_ROTATIONS,
     WALL_KICK_DATA,
     I_WALL_KICK_DATA
 )
-from tile_map import TileMap
+
+# ================== Componentes ================== 
+from game.components.tile_map import TileMap
 
 
 class Piece:
+    """
+    Instância de uma peça do jogo. Contém:
+
+    -> Tipo da peça (I, O, S, Z, L ou J)
+
+    -> Coordenadas atuais da peça dentro do `TileMap`
+
+    -> Rotação atual da peça
+    """
+
     def __init__(self, map: TileMap, type: str) -> None:
         self.map = map
         self.type = type
