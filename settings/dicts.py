@@ -1,25 +1,38 @@
-COLORS: dict[str, tuple[int, int, int]] = {
-    "bg_color": (82, 92, 168),
-    "bg_block_area_color": (19, 36, 87),
-    "block_area_line": (200, 200, 200),
-    'block_area_border_color': (141, 152, 235),
+import pygame
 
-    "I": (81, 225, 252),
-    "O": (254, 248, 76),
-    "T": (148, 54, 146),
-    "J": (71, 121, 212),
-    "L": (246, 146, 48),
-    "S": (233, 61, 30),
-    "Z": (121, 174, 61),
+# ================== Cores do jogo ==================
 
-    "I#": (81, 225, 252),
-    "O#": (254, 248, 76),
-    "T#": (148, 54, 146),
-    "J#": (71, 121, 212),
-    "L#": (246, 146, 48),
-    "S#": (233, 61, 30),
-    "Z#": (121, 174, 61)
+COLORS: dict[str, pygame.Color] = {
+
+    # Geral
+    "bg_color": pygame.Color("#525CA8"),  # Plano de fundo principal
+
+    # Área dos blocos (AB)
+    "bg_block_area_color": pygame.Color("#132457"),  # Plano de fundo da AB
+    "block_area_line": pygame.Color("#C8C8C8"),  # Linhas de grade
+    'block_area_border_color': pygame.Color("#8D98EB"),  # Borda da AB
+
+    # Peças móveis
+    "I": pygame.Color("#51E1FC"),
+    "O": pygame.Color("#FEF84C"),
+    "T": pygame.Color("#943692"),
+    "J": pygame.Color("#4779D4"),
+    "L": pygame.Color("#F69230"),
+    "S": pygame.Color("#E93D1E"),
+    "Z": pygame.Color("#79AE3D"),
+
+    # Peças fixas
+    "I#": pygame.Color("#51E1FC"),
+    "O#": pygame.Color("#FEF84C"),
+    "T#": pygame.Color("#943692"),
+    "J#": pygame.Color("#4779D4"),
+    "L#": pygame.Color("#F69230"),
+    "S#": pygame.Color("#E93D1E"),
+    "Z#": pygame.Color("#79AE3D")
 }
+
+
+# ================== Coordenas de nascimento ================== 
 
 PIECES_COORDS: dict[str, tuple[tuple[int, int], ...]] = {
     "I": ((0, 3), (0, 4), (0, 5), (0, 6)),
@@ -30,6 +43,13 @@ PIECES_COORDS: dict[str, tuple[tuple[int, int], ...]] = {
     "S": ((0, 4), (0, 5), (1, 3), (1, 4)),
     "Z": ((0, 3), (0, 4), (1, 4), (1, 5))
 }
+
+
+# ================== Coordenadas base de rotação ================== 
+#   -> 0: 0°
+#   -> 1: 90°
+#   -> 2: 180°
+#   -> 3: 270°
 
 PIECES_ROTATIONS: dict[str, dict[int, tuple[tuple[int, int], ...]]] = {
     "I": {
@@ -77,6 +97,9 @@ PIECES_ROTATIONS: dict[str, dict[int, tuple[tuple[int, int], ...]]] = {
     }
 }
 
+
+# ================== Testes de Wall Kick ================== 
+
 WALL_KICK_DATA: dict[str, tuple[tuple[int, int], ...]] = {
     "0>1": ((0, 0), (-1, 0), (-1, 1), (0, -2), (-1, -2)),
     "1>0": ((0, 0), (1, 0), (1, -1), (0, 2), (1, 2)),
@@ -87,6 +110,9 @@ WALL_KICK_DATA: dict[str, tuple[tuple[int, int], ...]] = {
     "3>0": ((0, 0), (-1, 0), (-1, -1), (0, 2), (-1, 2)),
     "0>3": ((0, 0), (1, 0), (1, 1), (0, -2), (1, -2)),
 }
+
+
+# ================== Testes de Wall Kick da peça I ================== 
 
 I_WALL_KICK_DATA: dict[str, tuple[tuple[int, int], ...]] = {
     "0>1": ((0, 0), (-2, 0), (1, 0), (-2, -1), (1, 2)),

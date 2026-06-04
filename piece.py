@@ -1,4 +1,4 @@
-from constants import (
+from settings.dicts import (
     PIECES_COORDS,
     PIECES_ROTATIONS,
     WALL_KICK_DATA,

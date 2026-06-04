@@ -3,7 +3,8 @@ import random
  
 from piece import Piece
 from tile_map import TileMap
-from constants import COLORS
+from timer import Timer
+from settings.dicts import COLORS
 
 
 class Game:
@@ -20,13 +21,13 @@ class Game:
         self.have_active_piece: bool = False
         self.piece: Piece
         self.pieces_poll: list[str] = []
+        self.fall_speed: int = 800
 
         # Timers
-        self.MOVE_DOWN = pygame.USEREVENT + 1
-        pygame.time.set_timer(self.MOVE_DOWN, 400)
+        self.move_down_timer: Timer = Timer(self.fall_speed, self._handle_move_down, repeat=True)
 
 
-    def _handle_events(self) -> None:
+    def _handle_touch_events(self) -> None:
         """
         Cuida dos eventos do *Game Loop*
         """
@@ -54,10 +55,17 @@ class Game:
                     # Rotaciona para a direita
                     if event.key == pygame.K_x:
                         self.piece.rotate("right")
+
+
+    def _handle_hold_events(self) -> None:
+        keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_DOWN]:
+            self.move_down_timer.duration = 100
             
-                # Desce a peça
-                if event.type == self.MOVE_DOWN:
-                    self._handle_move_down()
+        else:
+            self.move_down_timer.duration = self.fall_speed
+
 
 
     def _handle_move_down(self) -> None:
@@ -199,7 +207,9 @@ class Game:
         """
 
         while self.running:
-            self._handle_events()
+            self._handle_touch_events()
+            self._handle_hold_events()
+            self.move_down_timer.update()
             self._update()
             self._draw()
             self.clock.tick(60)
