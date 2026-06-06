@@ -19,6 +19,7 @@ class Renderer:
 
         self._draw_pieces_area()
         self._draw_grid_lines()
+        self._draw_score_area(game.get_score())
             
         pygame.display.flip()
 
@@ -74,3 +75,15 @@ class Renderer:
 
         for x in range(9):
             pygame.draw.line(game.screen, COLORS['block_area_line'], (x * 25 + 50, 70), (x * 25 + 50, 570))
+
+
+    def _draw_score_area(self, score_num: str = "0") -> None:
+        font = pygame.font.SysFont(None, 30)
+        score = font.render(score_num, True,(255, 255, 255))
+        score_rect = score.get_rect()
+        
+        score_area: pygame.Rect = pygame.Rect(300, 70, 125, 70)
+        score_rect.center = score_area.center
+
+        pygame.draw.rect(game.screen, COLORS["bg_block_area_color"], score_area)
+        game.screen.blit(score, score_rect)

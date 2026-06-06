@@ -36,7 +36,7 @@ class GameData:
 
         # Número de linhas limpas
         self.rows_cleared: int = 0
-
+        
         # Contador de frames
         self.frame_cont: int = 0
 
@@ -48,12 +48,18 @@ class GameData:
 
         # Velocidade acelerado de queda (soft drop)
         self.fast_falling_speed = fast_falling_speed
+        
+        # Pontuação do jogo
+        self.score: int = 0
 
 
     def get_level(self) -> int:
         level: int = self.rows_cleared // 10
 
         return level
+
+    def get_score(self) -> str:
+        return str(self.score)
 
 
 # Objeto que guarda as informações do jogo

@@ -34,6 +34,7 @@ class Tetris:
             self.renderer.render()
 
             game.frame_cont += 1
+            game.score += 1
 
             game.clock.tick(60)
 
