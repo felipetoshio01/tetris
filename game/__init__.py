@@ -21,8 +21,10 @@ class Tetris:
         self.event_manager: EventManager = EventManager()
         self.renderer: Renderer = Renderer()
 
+        pygame.display.set_caption("Tetris")
 
-    def run(self):
+
+    def run(self) -> None:
         """
         Começa o Game Loop
         """

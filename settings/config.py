@@ -1,6 +1,5 @@
 
 # ================== Variáveis de jogo ================== 
-start_falling_speed: int = 48  # 1 cell a cada 48 frames
 fast_falling_speed: int = 4  # 1 cell a cada 4 frames
 
 

@@ -7,6 +7,9 @@ from game.logic.game_data import game_data as game
 # ================== Componentes ================== 
 from game.components.piece import Piece
 
+# ================== Configurações ================== 
+from settings.dicts import SPEEDS
+
 
 class EventManager:
     """
@@ -26,15 +29,21 @@ class EventManager:
             # GAME OVER
             if not game.piece.is_position_valid():
                 game.game_grid.clear_matrix()
+                game.rows_cleared = 0
+                self._update_speed()
 
             game.piece.add_piece()
             game.have_active_piece = True
         
         # Se houver uma peça ativa
         else:
-            if game.frame_cont >= game.falling_speed:
-                game.frame_cont = 0
-                self._handle_move_down()
+            self._update_movement()
+
+
+    def _update_movement(self) -> None:
+        if game.frame_cont >= game.falling_speed:
+            game.frame_cont = 0
+            self._handle_move_down()
 
 
     def _shuffle_new_pieces(self) -> None:
@@ -71,8 +80,11 @@ class EventManager:
         if game.piece.hit_ground():
             game.piece.fix_piece()
 
-            # Após fixar, limpe as linhas completas
-            game.game_grid.clear_complete_rows()
+            # Após fixar, limpe as linhas completas a aumente o contador
+            game.rows_cleared += game.game_grid.clear_complete_rows()
+
+            # Mude, a velocidade
+            self._update_speed()
 
             # Avisa que não tem uma peça ativa
             game.have_active_piece = False     
@@ -80,3 +92,14 @@ class EventManager:
         # Senão, desça normal
         else:
             game.piece.move_down(1)
+    
+
+    def _update_speed(self) -> None:
+        level = game.get_level()
+
+        if level not in SPEEDS:
+            return
+
+        else:
+            game.normal_falling_speed = SPEEDS[level]
+        

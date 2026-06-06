@@ -76,12 +76,20 @@ class TileMap:
                 self.matrix[row_index + 1] = row.copy()
 
 
-    def clear_complete_rows(self) -> None:
+    def clear_complete_rows(self) -> int:
         """
         Faz a lógica completa de limpar **rows** completas. No final, limpa a `TileMap.complete_rows`
         """
-
+        # Número de rows sendo limpas
+        number_of_rows: int = 0 
+        
         if self._get_complete_rows():
+            # Pega quantas rows foram obtidas
+            number_of_rows = len(self.complete_rows)
+            
             self._delete_complete_rows()
             self._move_down_rows()
             self.complete_rows.clear()
+
+        return number_of_rows
+    

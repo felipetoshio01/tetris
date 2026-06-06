@@ -1,7 +1,7 @@
+# ================== Bibliotecas ================== 
 import pygame
 
 # ================== Cores do jogo ==================
-
 COLORS: dict[str, pygame.Color] = {
 
     # Geral
@@ -33,7 +33,6 @@ COLORS: dict[str, pygame.Color] = {
 
 
 # ================== Coordenas de nascimento ================== 
-
 PIECES_COORDS: dict[str, tuple[tuple[int, int], ...]] = {
     "I": ((0, 3), (0, 4), (0, 5), (0, 6)),
     "O": ((0, 4), (0, 5), (1, 4), (1, 5)),
@@ -50,7 +49,6 @@ PIECES_COORDS: dict[str, tuple[tuple[int, int], ...]] = {
 #   -> 1: 90°
 #   -> 2: 180°
 #   -> 3: 270°
-
 PIECES_ROTATIONS: dict[str, dict[int, tuple[tuple[int, int], ...]]] = {
     "I": {
         0: ((0, 3), (0, 4), (0, 5), (0, 6)),
@@ -99,7 +97,6 @@ PIECES_ROTATIONS: dict[str, dict[int, tuple[tuple[int, int], ...]]] = {
 
 
 # ================== Testes de Wall Kick ================== 
-
 WALL_KICK_DATA: dict[str, tuple[tuple[int, int], ...]] = {
     "0>1": ((0, 0), (-1, 0), (-1, 1), (0, -2), (-1, -2)),
     "1>0": ((0, 0), (1, 0), (1, -1), (0, 2), (1, 2)),
@@ -113,7 +110,6 @@ WALL_KICK_DATA: dict[str, tuple[tuple[int, int], ...]] = {
 
 
 # ================== Testes de Wall Kick da peça I ================== 
-
 I_WALL_KICK_DATA: dict[str, tuple[tuple[int, int], ...]] = {
     "0>1": ((0, 0), (-2, 0), (1, 0), (-2, -1), (1, 2)),
     "1>0": ((0, 0), (2, 0), (-1, 0), (2, 1), (-1, -2)),
@@ -123,4 +119,24 @@ I_WALL_KICK_DATA: dict[str, tuple[tuple[int, int], ...]] = {
     "3>2": ((0, 0), (-2, 0), (1, 0), (-2, -1), (1, 2)),
     "3>0": ((0, 0), (1, 0), (-2, 0), (1, -2), (-2, 1)),
     "0>3": ((0, 0), (-1, 0), (2, 0), (-1, 2), (2, -1)),
+}
+
+
+# ================== Valores de velocidade (cell/frame) ================== 
+SPEEDS: dict[int, int] = {
+    0: 48,
+    1: 43,
+    2: 38,
+    3: 33,
+    4: 28,
+    5: 23,
+    6: 18,
+    7: 13,
+    8: 8,
+    9: 6,
+    10: 5,
+    13: 4,
+    16: 3,
+    19: 2,
+    29: 1
 }

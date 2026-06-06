@@ -6,7 +6,8 @@ from game.components.tile_map import TileMap
 from game.components.piece import Piece
 
 # ================== Configurações ================== 
-from settings.config import start_falling_speed, fast_falling_speed
+from settings.config import fast_falling_speed
+from settings.dicts import SPEEDS
 
 
 class GameData:
@@ -33,17 +34,26 @@ class GameData:
         # Ordem de surgimento de peças
         self.pieces_poll: list[str] = []
 
+        # Número de linhas limpas
+        self.rows_cleared: int = 0
+
         # Contador de frames
         self.frame_cont: int = 0
 
         # Velocidade atual queda (cells/frame)
-        self.falling_speed = start_falling_speed
+        self.falling_speed = SPEEDS[0]
         
         # Velocidade normal de queda
-        self.normal_falling_speed = start_falling_speed
+        self.normal_falling_speed = SPEEDS[0]
 
         # Velocidade acelerado de queda (soft drop)
         self.fast_falling_speed = fast_falling_speed
+
+
+    def get_level(self) -> int:
+        level: int = self.rows_cleared // 10
+
+        return level
 
 
 # Objeto que guarda as informações do jogo
