@@ -2,6 +2,8 @@
 import pygame
 import sys
 
+pygame.init()
+
 # ================== Componentes ================== 
 from game.logic.renderer import Renderer
 from game.logic.inputs import InputManager
@@ -34,7 +36,6 @@ class Tetris:
             self.renderer.render()
 
             game.frame_cont += 1
-            game.score += 1
 
             game.clock.tick(60)
 

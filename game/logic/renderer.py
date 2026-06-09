@@ -6,7 +6,7 @@ from game.logic.game_data import game_data as game
 
 # ================== Configurações ================== 
 from settings.dicts import COLORS
-from settings.config import pieces_area_board_width, pieces_area_board_radius
+from settings.config import pieces_area_board_width, pieces_area_board_radius, score_font
 
 
 class Renderer:
@@ -78,8 +78,7 @@ class Renderer:
 
 
     def _draw_score_area(self, score_num: str = "0") -> None:
-        font = pygame.font.SysFont(None, 30)
-        score = font.render(score_num, True,(255, 255, 255))
+        score = score_font.render(score_num, True, (255, 255, 255))
         score_rect = score.get_rect()
         
         score_area: pygame.Rect = pygame.Rect(300, 70, 125, 70)

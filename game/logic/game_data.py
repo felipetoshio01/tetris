@@ -16,8 +16,6 @@ class GameData:
     """
 
     def __init__(self) -> None:
-        pygame.init()
-
         self.screen: pygame.surface.Surface = pygame.display.set_mode((450, 640))
         self.clock: pygame.Clock = pygame.Clock()
         self.running: bool = True

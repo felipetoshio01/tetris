@@ -81,13 +81,16 @@ class EventManager:
             game.piece.fix_piece()
 
             # Após fixar, limpe as linhas completas a aumente o contador
-            game.rows_cleared += game.game_grid.clear_complete_rows()
+            rows_cleared = game.game_grid.clear_complete_rows()
+
+            game.rows_cleared += rows_cleared
+            self._update_score(rows_cleared)
 
             # Mude, a velocidade
             self._update_speed()
 
             # Avisa que não tem uma peça ativa
-            game.have_active_piece = False     
+            game.have_active_piece = False
 
         # Senão, desça normal
         else:
@@ -102,4 +105,23 @@ class EventManager:
 
         else:
             game.normal_falling_speed = SPEEDS[level]
+    
+
+    def _update_score(self, rows_cleared: int) -> None:
+        level: int = game.get_level()
+        
+        if rows_cleared == 0:
+            return
+        
+        elif rows_cleared == 1:
+            game.score += 40 * (level + 1)
+        
+        elif rows_cleared == 2:
+            game.score += 100 * (level + 1)
+        
+        elif rows_cleared == 3:
+            game.score += 300 * (level + 1)
+        
+        elif rows_cleared >= 4:
+            game.score += 1200 * (level + 1)
         
