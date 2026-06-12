@@ -6,7 +6,7 @@ from game.logic.game_data import game_data as game
 
 # ================== Configurações ================== 
 from settings.dicts import COLORS
-from settings.config import pieces_area_board_width, pieces_area_board_radius, score_font
+from settings.config import border_width, border_radius, score_font
 
 
 class Renderer:
@@ -34,21 +34,7 @@ class Renderer:
         pygame.draw.rect(game.screen, COLORS['bg_block_area_color'], pieces_area)
 
         self._draw_pieces()
-
-        # Cria a borda da área dos bloquinhos
-        pieces_area_border: pygame.Rect = pygame.Rect(
-            25 - pieces_area_board_width,
-            70 - pieces_area_board_width,
-            250 + 2 * pieces_area_board_width,
-            500 + 2 * pieces_area_board_width
-        )
-        pygame.draw.rect(
-            game.screen,
-            COLORS['block_area_border_color'], 
-            pieces_area_border, 
-            width=pieces_area_board_width, 
-            border_radius=pieces_area_board_radius
-        )
+        self._draw_outline(pieces_area, border_width, border_radius)
 
 
     def _draw_pieces(self) -> None:
@@ -85,4 +71,23 @@ class Renderer:
         score_rect.center = score_area.center
 
         pygame.draw.rect(game.screen, COLORS["bg_block_area_color"], score_area)
+        self._draw_outline(score_area, border_width, border_radius)
+
         game.screen.blit(score, score_rect)
+
+
+    def _draw_outline(self, rect: pygame.Rect, width: int, radius: int = 0) -> None:
+        border: pygame.Rect = pygame.Rect(
+            rect.x - width,
+            rect.y - width,
+            rect.width + 2 * width,
+            rect.height + 2 * width
+        )
+
+        pygame.draw.rect(
+            game.screen,
+            COLORS['block_area_border_color'],
+            border,
+            width=width,
+            border_radius=radius
+        )
