@@ -28,9 +28,8 @@ class EventManager:
 
             # GAME OVER
             if not game.piece.is_position_valid():
-                game.game_grid.clear_matrix()
-                game.rows_cleared = 0
-                self._update_speed()
+                self._game_over()
+                
 
             game.piece.add_piece()
             game.have_active_piece = True
@@ -124,4 +123,17 @@ class EventManager:
         
         elif rows_cleared >= 4:
             game.score += 1200 * (level + 1)
+    
+
+    def _game_over(self) -> None:
+        # Limpa o grid
+        game.game_grid.clear_matrix()
+
+        # Reinicia a contagem de rows
+        game.rows_cleared = 0
+
+        # Limpa o score
+        game.score = 0
         
+        # Altera a velocidade para o início
+        self._update_speed()
