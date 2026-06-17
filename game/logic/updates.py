@@ -40,10 +40,19 @@ class EventManager:
 
 
     def _update_movement(self) -> None:
-        if game.frame_cont >= game.falling_speed:
+        """
+        Atualiza a posição da `Piece` quando ela deve descer ou realizar um **hard drop**
+        """
+
+        if game.hard_drop:
+            self._update_fix_piece()
+            game.frame_cont = 0
+            game.hard_drop = False
+
+        elif game.frame_cont >= game.falling_speed:
             game.frame_cont = 0
             self._handle_move_down()
-
+        
 
     def _shuffle_new_pieces(self) -> None:
         """
@@ -77,26 +86,43 @@ class EventManager:
         
         # Se a peça atingiu uma coisa
         if game.piece.hit_ground():
-            game.piece.fix_piece()
-
-            # Após fixar, limpe as linhas completas a aumente o contador
-            rows_cleared = game.game_grid.clear_complete_rows()
-
-            game.rows_cleared += rows_cleared
-            self._update_score(rows_cleared)
-
-            # Mude, a velocidade
-            self._update_speed()
-
-            # Avisa que não tem uma peça ativa
-            game.have_active_piece = False
+            self._update_fix_piece()
 
         # Senão, desça normal
         else:
             game.piece.move_down(1)
     
 
+    def _update_fix_piece(self) -> None:
+        """
+        Faz a lógica necessária para fixar uma peça
+
+        - Fixar
+        - Limpar (se houver) **rows** limpas
+        - Atualizar (se necessário) o **score**
+        - Atualizar (se necessário) a velocidade
+        """
+
+        game.piece.fix_piece()
+
+        # Após fixar, limpe as linhas completas a aumente o contador
+        rows_cleared = game.game_grid.clear_complete_rows()
+
+        game.rows_cleared += rows_cleared
+        self._update_score(rows_cleared)
+
+        # Mude, a velocidade
+        self._update_speed()
+
+        # Avisa que não tem uma peça ativa
+        game.have_active_piece = False
+
+
     def _update_speed(self) -> None:
+        """
+        Atualiza da velocidade de queda da `Piece`
+        """
+
         level = game.get_level()
 
         if level not in SPEEDS:
@@ -107,6 +133,10 @@ class EventManager:
     
 
     def _update_score(self, rows_cleared: int) -> None:
+        """
+        Atualiza a pontuação conforme a quantidade de **rows** limpas (`rows_cleared`)
+        """
+
         level: int = game.get_level()
         
         if rows_cleared == 0:
@@ -126,6 +156,12 @@ class EventManager:
     
 
     def _game_over(self) -> None:
+        """
+        Faz a lógica necessária após um Game Over
+        - Limpar a tela
+        - Reiniciar as contagens de **score**, **rows** limpas e **score**
+        """
+
         # Limpa o grid
         game.game_grid.clear_matrix()
 

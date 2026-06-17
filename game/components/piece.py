@@ -218,6 +218,48 @@ class Piece:
             self.rotation = new_rotation
 
 
+    def hard_drop(self) -> None:
+        """
+        Testa as `Piece.coords` para ver onde o hard drop vai parar. Se imediatamente abaixo delas estiver uma peça fixa ou o chão, ela será fixa.
+        """
+
+        test_coords: list[list[int]] = self.coords.copy()
+        trying_drop: bool = True
+        quantity: int = 0  # Quantidade que vai descer após o drop
+
+        # Teste
+        while trying_drop:
+
+            # Se deve parar
+            if self._stop_drop(test_coords):
+                self.move_down(quantity)
+
+                trying_drop = False
+
+            # Se não tem que parar, forme outro teste
+            else:
+                test_coords = [[row + 1, column] for row, column in test_coords]
+                quantity += 1
+
+
+    def _stop_drop(self, test_coords) -> bool:
+        """
+        Verifica se o processo de hard drop deve ser parado ou não.
+        """
+
+        for coord in test_coords:
+            row, column = coord
+
+            if row + 1 > 19:
+                return True
+
+            if "#" in self.map.matrix[row + 1][column]:
+                return True
+        
+        return False
+
+
+
     def _can_move_vertical(self, moves: int) -> bool:
         """
         Determina se um movimento vertical de determinada quantidade de casas (`moves`) é válido ou não. Caso seja válido, retorna **True**, senão **False**.

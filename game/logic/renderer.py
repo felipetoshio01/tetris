@@ -64,9 +64,15 @@ class Renderer:
 
 
     def _draw_score_area(self, score_num: str = "0") -> None:
+        """
+        Desenha a área do **score**
+        """
+        
+        # Fonte do score
         score = score_font.render(score_num, True, (255, 255, 255))
         score_rect = score.get_rect()
         
+        # Retângulo onde o score ficará
         score_area: pygame.Rect = pygame.Rect(300, 70, 125, 70)
         score_rect.center = score_area.center
 
@@ -77,6 +83,10 @@ class Renderer:
 
 
     def _draw_outline(self, rect: pygame.Rect, width: int, radius: int = 0) -> None:
+        """
+        Desenha uma borda ao redor do retângulo especificado (`rect`), com a largura e arredondamento especificado
+        """
+
         border: pygame.Rect = pygame.Rect(
             rect.x - width,
             rect.y - width,

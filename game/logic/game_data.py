@@ -50,13 +50,25 @@ class GameData:
         # Pontuação do jogo
         self.score: int = 0
 
+        # Se a peça está em processo de hard drop
+        self.hard_drop: bool = False
+
 
     def get_level(self) -> int:
+        """
+        Retorna o **Level** do jogo. A cada 10 **rows** limpas, um **Level** é adicionado
+
+        """
         level: int = self.rows_cleared // 10
 
         return level
-
+    
+    
     def get_score(self) -> str:
+        """
+        Retorna o **score** do jogo em formato de string
+        """
+
         return str(self.score)
 
 

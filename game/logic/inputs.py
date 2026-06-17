@@ -43,9 +43,18 @@ class InputManager:
                     # Rotaciona para a direita
                     if event.key == pygame.K_x:
                         game.piece.rotate("right")
+                    
+                    # Hard drop
+                    if event.key == pygame.K_SPACE:
+                        game.piece.hard_drop()
+                        game.hard_drop = True
 
 
     def _handle_hold_events(self) -> None:
+        """
+        Cuida dos inputs que devem ser segurados
+        """
+
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_DOWN]:
