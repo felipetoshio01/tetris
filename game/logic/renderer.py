@@ -6,7 +6,7 @@ from game.logic.game_data import game_data as game
 
 # ================== Configurações ================== 
 from settings.dicts import COLORS
-from settings.config import border_width, border_radius, score_font
+from settings.config import BORDER_WIDTH, BORDER_RADIUS, SCORE_FONT
 
 
 class Renderer:
@@ -34,7 +34,7 @@ class Renderer:
         pygame.draw.rect(game.screen, COLORS['bg_block_area_color'], pieces_area)
 
         self._draw_pieces()
-        self._draw_outline(pieces_area, border_width, border_radius)
+        self._draw_outline(pieces_area, BORDER_WIDTH, BORDER_RADIUS)
 
 
     def _draw_pieces(self) -> None:
@@ -69,7 +69,7 @@ class Renderer:
         """
         
         # Fonte do score
-        score = score_font.render(score_num, True, (255, 255, 255))
+        score = SCORE_FONT.render(score_num, True, (255, 255, 255))
         score_rect = score.get_rect()
         
         # Retângulo onde o score ficará
@@ -77,7 +77,7 @@ class Renderer:
         score_rect.center = score_area.center
 
         pygame.draw.rect(game.screen, COLORS["bg_block_area_color"], score_area)
-        self._draw_outline(score_area, border_width, border_radius)
+        self._draw_outline(score_area, BORDER_WIDTH, BORDER_RADIUS)
 
         game.screen.blit(score, score_rect)
 

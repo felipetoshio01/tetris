@@ -30,7 +30,7 @@ class TileMap:
         return True
     
 
-    def _get_complete_rows(self) -> bool:
+    def get_complete_rows(self) -> bool:
         """
         Adiciona o index de **rows** completas ao `TileMap.complete_rows`. Caso ele tenha obtido um **row** completa, retorna **True**, senão **False**
         """
@@ -83,7 +83,7 @@ class TileMap:
         # Número de rows sendo limpas
         number_of_rows: int = 0 
         
-        if self._get_complete_rows():
+        if self.get_complete_rows():
             # Pega quantas rows foram obtidas
             number_of_rows = len(self.complete_rows)
             

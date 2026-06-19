@@ -6,7 +6,7 @@ from game.components.tile_map import TileMap
 from game.components.piece import Piece
 
 # ================== Configurações ================== 
-from settings.config import fast_falling_speed
+from settings.config import FAST_FALLING_SPEED
 from settings.dicts import SPEEDS
 
 
@@ -45,7 +45,7 @@ class GameData:
         self.normal_falling_speed = SPEEDS[0]
 
         # Velocidade acelerado de queda (soft drop)
-        self.fast_falling_speed = fast_falling_speed
+        self.fast_falling_speed = FAST_FALLING_SPEED
         
         # Pontuação do jogo
         self.score: int = 0

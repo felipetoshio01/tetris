@@ -9,6 +9,7 @@ from game.components.piece import Piece
 
 # ================== Configurações ================== 
 from settings.dicts import SPEEDS
+from settings.config import CLEAR_SOUND
 
 
 class EventManager:
@@ -105,14 +106,17 @@ class EventManager:
 
         game.piece.fix_piece()
 
-        # Após fixar, limpe as linhas completas a aumente o contador
-        rows_cleared = game.game_grid.clear_complete_rows()
+        if game.game_grid.get_complete_rows():
+            # Após fixar, limpe as linhas completas a aumente o contador
+            rows_cleared = game.game_grid.clear_complete_rows()
 
-        game.rows_cleared += rows_cleared
-        self._update_score(rows_cleared)
+            CLEAR_SOUND.play()
 
-        # Mude, a velocidade
-        self._update_speed()
+            game.rows_cleared += rows_cleared
+            self._update_score(rows_cleared)
+
+            # Mude, a velocidade
+            self._update_speed()
 
         # Avisa que não tem uma peça ativa
         game.have_active_piece = False
