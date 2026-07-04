@@ -11,7 +11,9 @@ BORDER_RADIUS: int = 15
 
 
 # ================== Fontes ================== 
-SCORE_FONT: pygame.Font = pygame.font.Font("fonts/PressStart2P-Regular.ttf", 15)
+NUMBER_FONT: pygame.Font = pygame.font.Font("fonts/PressStart2P-Regular.ttf", 15)
+TITLE_FONT: pygame.Font = pygame.font.Font("fonts/Tiny5-Regular.ttf", 60)
+TEXT_FONT: pygame.Font = pygame.font.Font("fonts/Jersey10-Regular.ttf", 35)
 
 
 # ================== SFX ================== 

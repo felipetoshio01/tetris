@@ -24,6 +24,13 @@ class InputManager:
             # Saída do jogo
             if event.type == pygame.QUIT:
                 game.running = False
+            
+            if event.type == pygame.KEYDOWN:
+
+                if event.key == pygame.K_0:
+                    game.state = "game_screen"
+
+            
 
             # Se houver uma peça ativa, execute o movimento delas
             if game.have_active_piece:

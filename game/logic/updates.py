@@ -22,6 +22,11 @@ class EventManager:
         Atualiza todo a lógica do *Game Loop*
         """
 
+        if game.state == "game_screen":
+            self._update_game()
+        
+
+    def _update_game(self):
         # Se não houver peça ativa, desenhe ela
         if not game.have_active_piece:
             piece_type: str = self._choose_piece()

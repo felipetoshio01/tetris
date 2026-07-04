@@ -53,6 +53,9 @@ class GameData:
         # Se a peça está em processo de hard drop
         self.hard_drop: bool = False
 
+        # Qual o estado do jogo
+        self.state: str = "title_screen"
+
 
     def get_level(self) -> int:
         """
@@ -70,6 +73,7 @@ class GameData:
         """
 
         return str(self.score)
+        
 
 
 # Objeto que guarda as informações do jogo

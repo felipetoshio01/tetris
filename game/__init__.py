@@ -33,12 +33,11 @@ class Tetris:
         Começa o Game Loop
         """
 
-        self.music_player.play()
-        
         while game.running:
             self.input_manager.handle_inputs()
             self.event_manager.update()
             self.renderer.render()
+            self.music_player.play()
 
             game.frame_cont += 1
 

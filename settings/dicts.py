@@ -10,7 +10,11 @@ COLORS: dict[str, pygame.Color] = {
     # Área dos blocos (AB)
     "bg_block_area_color": pygame.Color("#132457"),  # Plano de fundo da AB
     "block_area_line": pygame.Color("#C8C8C8"),  # Linhas de grade
-    'block_area_border_color': pygame.Color("#8D98EB"),  # Borda da AB
+    "block_area_border_color": pygame.Color("#8D98EB"),  # Borda da AB
+
+    "text_color": pygame.Color("#F0F0F0"),
+    "hover_color": pygame.Color("#1D3682"),
+    "click_color": pygame.Color("#A1A1A1"),
 
     # Peças móveis
     "I": pygame.Color("#51E1FC"),
