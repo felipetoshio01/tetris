@@ -3,14 +3,13 @@ import pygame
 
 # ================== Dados do jogo ================== 
 from game.logic.game_data import game_data as game
-from game.logic.music_player import MusicPlayer
 
 # ================== Componentes ================== 
 from game.components.button import Button
 
 # ================== Configurações ================== 
 from settings.dicts import COLORS
-from settings.config import BORDER_WIDTH, BORDER_RADIUS, NUMBER_FONT, TITLE_FONT
+from settings.config import BORDER_WIDTH, BORDER_RADIUS, NUMBER_FONT, TITLE_FONT, TEXT_FONT, NUMBER_FONT
 
 
 class Renderer:
@@ -19,31 +18,118 @@ class Renderer:
     """
 
     def render(self) -> None:
-        game.screen.fill(COLORS['bg_color'])
+        game.screen.fill(COLORS["primary_color"])
 
         if game.state == "game_screen":
+            game.screen.fill(COLORS["primary_color"])
             self._draw_game_screen()
         
         elif game.state == "title_screen":
+            game.screen.fill(COLORS["primary_color"])
             self._draw_title_screen()
+        
+        elif game.state == "game_over_screen":
+            game.screen.fill(COLORS["game_over_primary_color"])
+            self._draw_game_over_screen()
+
 
         pygame.display.flip()
 
 
+    def _draw_game_over_screen(self) -> None:
+
+        # GAME OVER
+        self._draw_game_over_title()
+
+        # Melhor score
+        self._draw_best_score_text()
+
+        # Melhor level
+        self._draw_best_level_text()
+        
+        # Botões
+        retry_button: Button = Button(
+            75,
+            350,
+            300,
+            75,
+            "Retry",
+            COLORS["game_over_secondary_color"],
+            COLORS["game_over_hover_color"],
+            self._start_game
+        )
+
+        title_screen_button: Button = Button(
+            75,
+            450,
+            300,
+            75,
+            "Tela inicial",
+            COLORS["game_over_secondary_color"],
+            COLORS["game_over_hover_color"],
+            self._title_screen
+        )
+
+        retry_button.draw()
+        title_screen_button.draw()
+
+
+    def _draw_game_over_title(self) -> None:
+        game_over_text = TITLE_FONT.render("GAME OVER", True, COLORS["text_color"])
+        game_over_text_rect = game_over_text.get_rect()
+
+        game_over_text_rect.center = (game.screen.width / 2, 150)
+        game.screen.blit(game_over_text, game_over_text_rect)
+
+
+    def _draw_best_score_text(self) -> None:
+        best_score_text = TEXT_FONT.render("Melhor score", True, COLORS["text_color"])
+        best_score_rect = best_score_text.get_rect() 
+
+        score = NUMBER_FONT.render(f"{game.best_score:0>5}", True, COLORS["text_color"])
+        score_rect = score.get_rect()
+
+        best_score_rect.center = (game.screen.width / 2, 200)
+        score_rect.center = (game.screen.width / 2, 225)
+
+        game.screen.blit(best_score_text, best_score_rect)
+        game.screen.blit(score, score_rect)
+
+
+    def _draw_best_level_text(self) -> None:
+        best_lvl_text = TEXT_FONT.render("Nível", True, COLORS["text_color"])
+        lvl_text_rect = best_lvl_text.get_rect() 
+
+        lvl = NUMBER_FONT.render(f"{game.best_lvl}", True, COLORS["text_color"])
+        lvl_rect = lvl.get_rect()
+
+        lvl_text_rect.center = (game.screen.width / 2, 275)
+        lvl_rect.center = (game.screen.width / 2, 300)
+
+        game.screen.blit(best_lvl_text, lvl_text_rect)
+        game.screen.blit(lvl, lvl_rect)
+ 
+
+    def _title_screen(self) -> None:
+        game.state = "title_screen"
+
+
     def _draw_title_screen(self):
-        title = TITLE_FONT.render(text="TETRIS", antialias=True, color=COLORS["text_color"])
+        title = TITLE_FONT.render("TETRIS", True, COLORS["text_color"])
         title_rect = title.get_rect()
 
         title_rect.center = (game.screen.width / 2, 150)
         game.screen.blit(title, title_rect)
 
         start_button: Button = Button(
-            x=75,
-            y=300,
-            width=300,
-            height=100,
-            text="Start",
-            function=self._start_game
+            75,
+            300,
+            300,
+            100,
+            "Start",
+            COLORS["secondary_color"],
+            COLORS["hover_color"],
+            self._start_game
         )
 
         start_button.draw()
@@ -66,8 +152,8 @@ class Renderer:
         """
 
         # Cria a área dos bloquinhos
-        pieces_area: pygame.Rect = pygame.Rect(left=25, top=70, width=250, height=500)
-        pygame.draw.rect(surface=game.screen, color=COLORS['bg_block_area_color'], rect=pieces_area)
+        pieces_area: pygame.Rect = pygame.Rect(25, 70, 250, 500)
+        pygame.draw.rect(game.screen, COLORS['secondary_color'], pieces_area)
 
         self._draw_pieces()
         self._draw_outline(pieces_area, BORDER_WIDTH, BORDER_RADIUS)
@@ -81,11 +167,11 @@ class Renderer:
         # Desenhando os quadrados
         for y, row in enumerate(game.game_grid.matrix):
             for x, tile_type in enumerate(row):
-                tile = pygame.Rect(left=x * 25 + 25, top=y * 25 + 70, width=25, height=25)
+                tile = pygame.Rect(x * 25 + 25, y * 25 + 70, 25, 25)
 
                 # Cores dos quadradinhos
                 if tile_type != "0":
-                    pygame.draw.rect(surface=game.screen, color=COLORS[tile_type], rect=tile)
+                    pygame.draw.rect(game.screen, COLORS[tile_type], tile)
 
 
     def _draw_grid_lines(self) -> None:
@@ -93,20 +179,10 @@ class Renderer:
         Desenha as linhas do Game Grid
         """
         for y in range(19):
-            pygame.draw.line(
-                surface=game.screen,
-                color=COLORS['block_area_line'],
-                start_pos=(25, y * 25 + 95),
-                end_pos=(275, y * 25 + 95)
-            )
+            pygame.draw.line(game.screen, COLORS['block_area_line'], (25, y * 25 + 95), (275, y * 25 + 95))
 
         for x in range(9):
-            pygame.draw.line(
-                surface=game.screen,
-                color=COLORS['block_area_line'],
-                start_pos=(x * 25 + 50, 70),
-                end_pos=(x * 25 + 50, 570)
-            )
+            pygame.draw.line(game.screen, COLORS['block_area_line'], (x * 25 + 50, 70), (x * 25 + 50, 570))
 
 
     def _draw_score_area(self, score_num: str = "0") -> None:
@@ -115,14 +191,14 @@ class Renderer:
         """
         
         # Fonte do score
-        score = NUMBER_FONT.render(text=score_num, antialias=True, color=COLORS["text_color"])
+        score = NUMBER_FONT.render(f"{score_num:0>5}", True, COLORS["text_color"])
         score_rect = score.get_rect()
         
         # Retângulo onde o score ficará
-        score_area: pygame.Rect = pygame.Rect(left=300, top=70, width=125, height=70)
+        score_area: pygame.Rect = pygame.Rect(300, 70, 125, 70)
         score_rect.center = score_area.center
 
-        pygame.draw.rect(surface=game.screen, color=COLORS["bg_block_area_color"], rect=score_area)
+        pygame.draw.rect(game.screen, COLORS["secondary_color"], score_area)
         self._draw_outline(score_area, BORDER_WIDTH, BORDER_RADIUS)
 
         game.screen.blit(score, score_rect)
@@ -134,16 +210,16 @@ class Renderer:
         """
 
         border: pygame.Rect = pygame.Rect(
-            left=rect.x - width,
-            top=rect.y - width,
-            width=rect.width + 2 * width,
-            height=rect.height + 2 * width
+            rect.x - width,
+            rect.y - width,
+            rect.width + 2 * width,
+            rect.height + 2 * width
         )
 
         pygame.draw.rect(
-            surface=game.screen,
-            color=COLORS['block_area_border_color'],
-            rect=border,
+            game.screen,
+            COLORS['block_area_border_color'],
+            border,
             width=width,
             border_radius=radius
         )

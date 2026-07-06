@@ -1,3 +1,6 @@
+# ================== Configurações ================== 
+from settings.config import CLEAR_SOUND
+
 class TileMap: 
     """
     Matrix 20x10 que conterá as informações para a região das peças
@@ -23,11 +26,7 @@ class TileMap:
         Determina se uma `row` da `TileMap.matrix` está completa ou não
         """
         
-        for item in row:
-            if item == "0":
-                return False
-        
-        return True
+        return "0" not in row
     
 
     def get_complete_rows(self) -> bool:
@@ -60,20 +59,13 @@ class TileMap:
         Move cada **row** acima de uma **row** completa para baixo no `TileMap.matrix`
         """
 
-        self.complete_rows.sort()
+        new_matrix: list[list[str]] = [self.matrix[index] for index in range(20) if index not in self.complete_rows]
 
-        for cleared_row in self.complete_rows:
+        needed_rows: int = 20 - len(new_matrix)
 
-            for index, row in enumerate(reversed(self.matrix)):
-                
-                # Corrige o index
-                row_index = 19 - index
+        new_rows: list[list[str]] = [["0" for _ in range(10)] for _ in range(needed_rows)]
 
-                # Pula as rows que estão a baixo da row limpa
-                if row_index >= cleared_row:
-                    continue
-
-                self.matrix[row_index + 1] = row.copy()
+        self.matrix = new_rows + new_matrix
 
 
     def clear_complete_rows(self) -> int:
@@ -82,8 +74,10 @@ class TileMap:
         """
         # Número de rows sendo limpas
         number_of_rows: int = 0 
-        
+
         if self.get_complete_rows():
+            CLEAR_SOUND.play()
+
             # Pega quantas rows foram obtidas
             number_of_rows = len(self.complete_rows)
             

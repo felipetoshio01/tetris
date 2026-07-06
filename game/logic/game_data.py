@@ -50,6 +50,12 @@ class GameData:
         # Pontuação do jogo
         self.score: int = 0
 
+        # Melhor pontuação
+        self.best_score: int = 0
+
+        # Melhor nível
+        self.best_lvl: int = 0
+
         # Se a peça está em processo de hard drop
         self.hard_drop: bool = False
 

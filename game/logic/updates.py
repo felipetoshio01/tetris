@@ -26,7 +26,7 @@ class EventManager:
             self._update_game()
         
 
-    def _update_game(self):
+    def _update_game(self) -> None:
         # Se não houver peça ativa, desenhe ela
         if not game.have_active_piece:
             piece_type: str = self._choose_piece()
@@ -35,6 +35,7 @@ class EventManager:
             # GAME OVER
             if not game.piece.is_position_valid():
                 self._game_over()
+                return
                 
 
             game.piece.add_piece()
@@ -111,17 +112,14 @@ class EventManager:
 
         game.piece.fix_piece()
 
-        if game.game_grid.get_complete_rows():
-            # Após fixar, limpe as linhas completas a aumente o contador
-            rows_cleared = game.game_grid.clear_complete_rows()
+        # Após fixar, limpe as linhas completas a aumente o contador
+        rows_cleared = game.game_grid.clear_complete_rows()
 
-            CLEAR_SOUND.play()
+        game.rows_cleared += rows_cleared
+        self._update_score(rows_cleared)
 
-            game.rows_cleared += rows_cleared
-            self._update_score(rows_cleared)
-
-            # Mude, a velocidade
-            self._update_speed()
+        # Mude, a velocidade
+        self._update_speed()
 
         # Avisa que não tem uma peça ativa
         game.have_active_piece = False
@@ -170,6 +168,9 @@ class EventManager:
         - Limpar a tela
         - Reiniciar as contagens de **score**, **rows** limpas e **score**
         """
+        # Salva as informações
+        game.best_score = game.score
+        game.best_lvl = game.get_level()
 
         # Limpa o grid
         game.game_grid.clear_matrix()
@@ -182,3 +183,9 @@ class EventManager:
         
         # Altera a velocidade para o início
         self._update_speed()
+
+        # Atualiza o pool
+        self._shuffle_new_pieces()
+
+        game.state = "game_over_screen"
+        

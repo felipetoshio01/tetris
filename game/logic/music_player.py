@@ -1,7 +1,9 @@
+# ================== Bibliotecas ================== 
 import pygame
 
 # ================== Dados do jogo ================== 
 from game.logic.game_data import game_data as game
+
 
 class MusicPlayer:
     
@@ -20,23 +22,28 @@ class MusicPlayer:
         pygame.mixer.music.set_volume(0.2)
 
         if new_music == "title_screen":
-            self.play_title_music()
+            self.load_title_music()
             self.current_music = "title_screen"
+            pygame.mixer.music.play(-1)
         
         elif new_music == "game_screen":
-            self.play_game_music()
+            self.load_game_music()
             self.current_music = "game_screen"
+            pygame.mixer.music.play(-1)
+
+        elif new_music == "game_over_screen":
+            self.load_game_over_music()
+            self.current_music = "game_over_screen"
+            pygame.mixer.music.play()   
 
 
-    def play_game_music(self) -> None:
+    def load_game_music(self) -> None:
         pygame.mixer.music.load("music/game_music.wav")
 
-        # Loop infinito
-        pygame.mixer.music.play(-1)
 
-
-    def play_title_music(self) -> None:
+    def load_title_music(self) -> None:
         pygame.mixer.music.load("music/title_music.mp3")
 
-        # Loop infinito
-        pygame.mixer.music.play(-1, fade_ms=2000)
+
+    def load_game_over_music(self) -> None:
+        pygame.mixer.music.load("music/game_over_sound.wav")

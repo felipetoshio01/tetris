@@ -1,4 +1,6 @@
+# ================== Bibliotecas ================== 
 import pygame
+from collections.abc import Callable
 
 # ================== Dados do jogo ================== 
 from game.logic.game_data import game_data as game
@@ -9,10 +11,20 @@ from settings.dicts import COLORS
 
 
 class Button:
-    def __init__(self, x: int, y: int, width: int, height: int, text: str, function) -> None:
+    def __init__(self,
+                 x: int,
+                 y: int,
+                 width: int,
+                 height: int, 
+                 text: str,
+                 default_color: pygame.Color,
+                 hover_color: pygame.Color,
+                 function: Callable) -> None:
 
         # Retângulo do botão
         self.button_rect: pygame.Rect = pygame.Rect(x, y, width, height)
+        self.default_color = default_color
+        self.hover_color = hover_color
 
         # Texto do botão
         self.button_text = TEXT_FONT.render(text, True, COLORS["text_color"])
@@ -31,11 +43,11 @@ class Button:
         """
         
         mouse_pos: tuple[int, int] = pygame.mouse.get_pos()
-        button_color = COLORS["bg_block_area_color"]
+        button_color = self.default_color
 
         # Se o mouse entrou
         if self.button_rect.collidepoint(mouse_pos):
-            button_color = COLORS["hover_color"]
+            button_color = self.hover_color
 
             # Se o mouse entro e clicou
             if pygame.mouse.get_pressed()[0] == 1:

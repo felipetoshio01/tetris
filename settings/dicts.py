@@ -5,10 +5,16 @@ import pygame
 COLORS: dict[str, pygame.Color] = {
 
     # Geral
-    "bg_color": pygame.Color("#525CA8"),  # Plano de fundo principal
+    "primary_color": pygame.Color("#525CA8"),
+    "secondary_color": pygame.Color("#132457"),
+
+    # Game Over
+    "game_over_primary_color": pygame.Color("#eb9292"),
+    "game_over_secondary_color": pygame.Color("#e23f3f"),
+    "game_over_hover_color": pygame.Color("#822424"),
+
 
     # Área dos blocos (AB)
-    "bg_block_area_color": pygame.Color("#132457"),  # Plano de fundo da AB
     "block_area_line": pygame.Color("#C8C8C8"),  # Linhas de grade
     "block_area_border_color": pygame.Color("#8D98EB"),  # Borda da AB
 
