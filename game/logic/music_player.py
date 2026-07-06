@@ -18,8 +18,10 @@ class MusicPlayer:
         if new_music == self.current_music:
             return
 
-        pygame.mixer.music.fadeout(200)
+        
         pygame.mixer.music.set_volume(0.2)
+        pygame.mixer.music.fadeout(200)
+
 
         if new_music == "title_screen":
             self.load_title_music()

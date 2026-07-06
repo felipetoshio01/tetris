@@ -100,7 +100,7 @@ class Renderer:
         best_lvl_text = TEXT_FONT.render("Nível", True, COLORS["text_color"])
         lvl_text_rect = best_lvl_text.get_rect() 
 
-        lvl = NUMBER_FONT.render(f"{game.best_lvl}", True, COLORS["text_color"])
+        lvl = NUMBER_FONT.render(f"{game.best_lvl:0>2}", True, COLORS["text_color"])
         lvl_rect = lvl.get_rect()
 
         lvl_text_rect.center = (game.screen.width / 2, 275)
@@ -144,6 +144,7 @@ class Renderer:
         self._draw_pieces_area()
         self._draw_grid_lines()
         self._draw_score_area(game.get_score())
+        self._draw_lvl_area()
 
 
     def _draw_pieces_area(self) -> None:
@@ -190,6 +191,10 @@ class Renderer:
         Desenha a área do **score**
         """
         
+        # Texto
+        label = TEXT_FONT.render("Score", True, COLORS["text_color"])
+        label_rect = label.get_rect()
+
         # Fonte do score
         score = NUMBER_FONT.render(f"{score_num:0>5}", True, COLORS["text_color"])
         score_rect = score.get_rect()
@@ -197,11 +202,44 @@ class Renderer:
         # Retângulo onde o score ficará
         score_area: pygame.Rect = pygame.Rect(300, 70, 125, 70)
         score_rect.center = score_area.center
+        label_rect.center = score_area.center
+
+        label_rect.top = score_area.top
+        score_rect.top = label_rect.bottom + 5
 
         pygame.draw.rect(game.screen, COLORS["secondary_color"], score_area)
         self._draw_outline(score_area, BORDER_WIDTH, BORDER_RADIUS)
 
         game.screen.blit(score, score_rect)
+        game.screen.blit(label, label_rect)
+
+
+    def _draw_lvl_area(self) -> None:
+        """
+        Desenha a área do **score**
+        """
+        
+        # Texto
+        label = TEXT_FONT.render("Level", True, COLORS["text_color"])
+        label_rect = label.get_rect()
+
+        # Fonte do score
+        lvl = NUMBER_FONT.render(f"{game.get_level():0>2}", True, COLORS["text_color"])
+        lvl_rect = lvl.get_rect()
+        
+        # Retângulo onde o score ficará
+        lvl_area: pygame.Rect = pygame.Rect(300, 500, 125, 70)
+        lvl_rect.center = lvl_area.center
+        label_rect.center = lvl_area.center
+
+        label_rect.top = lvl_area.top
+        lvl_rect.top = label_rect.bottom + 5
+
+        pygame.draw.rect(game.screen, COLORS["secondary_color"], lvl_area)
+        self._draw_outline(lvl_area, BORDER_WIDTH, BORDER_RADIUS)
+
+        game.screen.blit(lvl, lvl_rect)
+        game.screen.blit(label, label_rect)
 
 
     def _draw_outline(self, rect: pygame.Rect, width: int, radius: int = 0) -> None:
