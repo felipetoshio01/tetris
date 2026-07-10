@@ -8,7 +8,7 @@ from game.logic.game_data import game_data as game
 from game.components.button import Button
 
 # ================== Configurações ================== 
-from settings.dicts import COLORS, PIECES_IMGS
+from settings.dicts import COLORS
 from settings.config import BORDER_WIDTH, BORDER_RADIUS, NUMBER_FONT, TITLE_FONT, TEXT_FONT, NUMBER_FONT
 
 
@@ -133,6 +133,32 @@ class Renderer:
         )
 
         start_button.draw()
+
+        self._draw_decorations()
+
+
+    def _draw_decorations(self) -> None:
+        l_piece = game.pieces_images["L"]
+
+        z_piece = pygame.transform.rotate(game.pieces_images["Z"], 90)
+
+        t_piece = game.pieces_images["T"]
+
+        j_piece = pygame.transform.rotate(game.pieces_images["J"], -90)
+
+        s_piece = game.pieces_images["S"]
+
+        o_piece = game.pieces_images["O"]
+
+        i_piece = game.pieces_images["I"]
+
+        game.screen.blit(l_piece, (25, 450))
+        game.screen.blit(z_piece, (15, 70))
+        game.screen.blit(t_piece, (330, 150))
+        game.screen.blit(j_piece, (300, 20))
+        game.screen.blit(s_piece, (100, 190))
+        game.screen.blit(o_piece, (300, 420))
+        game.screen.blit(i_piece, (190, 510))
 
 
     def _start_game(self) -> None:
