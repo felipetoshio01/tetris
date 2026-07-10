@@ -150,3 +150,15 @@ SPEEDS: dict[int, int] = {
     19: 2,
     29: 1
 }
+
+
+# ================== Imagens das peças ================== 
+PIECES_IMGS: dict[str, str] = {
+    "I": "images/I_Piece.png",
+    "O": "images/O_Piece.png",
+    "T": "images/T_Piece.png",
+    "J": "images/J_Piece.png",
+    "L": "images/L_Piece.png",
+    "S": "images/S_Piece.png",
+    "Z": "images/Z_Piece.png"
+}

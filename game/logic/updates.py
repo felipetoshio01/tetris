@@ -9,7 +9,6 @@ from game.components.piece import Piece
 
 # ================== Configurações ================== 
 from settings.dicts import SPEEDS
-from settings.config import CLEAR_SOUND
 
 
 class EventManager:
@@ -76,11 +75,17 @@ class EventManager:
         Se a lista estiver vazia, será criado uma nova e escolhido um novo elemento dessa nova lista
         """
 
-        # Se não houver mais peças, crie uma nova lista
+        # Se for a primeira lista
         if not game.pieces_poll:
             self._shuffle_new_pieces()
 
-        selected_piece: str = game.pieces_poll.pop()
+        # Se for a última peça, imediatamente faça um shuffle
+        if len(game.pieces_poll) == 1:
+            selected_piece: str = game.pieces_poll.pop()
+            self._shuffle_new_pieces()
+
+        else:
+            selected_piece: str = game.pieces_poll.pop()
 
         return selected_piece
 

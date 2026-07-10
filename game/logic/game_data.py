@@ -7,7 +7,7 @@ from game.components.piece import Piece
 
 # ================== Configurações ================== 
 from settings.config import FAST_FALLING_SPEED
-from settings.dicts import SPEEDS
+from settings.dicts import SPEEDS, PIECES_IMGS
 
 
 class GameData:
@@ -19,6 +19,11 @@ class GameData:
         self.screen: pygame.surface.Surface = pygame.display.set_mode((450, 640))
         self.clock: pygame.Clock = pygame.Clock()
         self.running: bool = True
+
+        # Imagens das peças
+        self.pieces_images: dict[str, pygame.Surface] = {
+            piece_name: pygame.image.load(img).convert_alpha() for piece_name, img in PIECES_IMGS.items()
+        }
 
         # Áreas dos blocos
         self.game_grid: TileMap = TileMap()

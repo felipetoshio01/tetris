@@ -8,7 +8,7 @@ from game.logic.game_data import game_data as game
 from game.components.button import Button
 
 # ================== Configurações ================== 
-from settings.dicts import COLORS
+from settings.dicts import COLORS, PIECES_IMGS
 from settings.config import BORDER_WIDTH, BORDER_RADIUS, NUMBER_FONT, TITLE_FONT, TEXT_FONT, NUMBER_FONT
 
 
@@ -64,7 +64,7 @@ class Renderer:
             450,
             300,
             75,
-            "Tela inicial",
+            "Title screen",
             COLORS["game_over_secondary_color"],
             COLORS["game_over_hover_color"],
             self._title_screen
@@ -83,7 +83,7 @@ class Renderer:
 
 
     def _draw_best_score_text(self) -> None:
-        best_score_text = TEXT_FONT.render("Melhor score", True, COLORS["text_color"])
+        best_score_text = TEXT_FONT.render("Best score", True, COLORS["text_color"])
         best_score_rect = best_score_text.get_rect() 
 
         score = NUMBER_FONT.render(f"{game.best_score:0>5}", True, COLORS["text_color"])
@@ -97,7 +97,7 @@ class Renderer:
 
 
     def _draw_best_level_text(self) -> None:
-        best_lvl_text = TEXT_FONT.render("Nível", True, COLORS["text_color"])
+        best_lvl_text = TEXT_FONT.render("Level", True, COLORS["text_color"])
         lvl_text_rect = best_lvl_text.get_rect() 
 
         lvl = NUMBER_FONT.render(f"{game.best_lvl:0>2}", True, COLORS["text_color"])
@@ -144,6 +144,7 @@ class Renderer:
         self._draw_pieces_area()
         self._draw_grid_lines()
         self._draw_score_area(game.get_score())
+        self._draw_pieces_preview()
         self._draw_lvl_area()
 
 
@@ -223,11 +224,11 @@ class Renderer:
         label = TEXT_FONT.render("Level", True, COLORS["text_color"])
         label_rect = label.get_rect()
 
-        # Fonte do score
+        # Fonte do level
         lvl = NUMBER_FONT.render(f"{game.get_level():0>2}", True, COLORS["text_color"])
         lvl_rect = lvl.get_rect()
         
-        # Retângulo onde o score ficará
+        # Retângulo onde o level ficará
         lvl_area: pygame.Rect = pygame.Rect(300, 500, 125, 70)
         lvl_rect.center = lvl_area.center
         label_rect.center = lvl_area.center
@@ -240,6 +241,33 @@ class Renderer:
 
         game.screen.blit(lvl, lvl_rect)
         game.screen.blit(label, label_rect)
+
+
+    def _draw_pieces_preview(self) -> None:
+        # Texto
+        label = TEXT_FONT.render("Next", True, COLORS["text_color"])
+        label_rect = label.get_rect()
+
+        # Retângulo onde as peças ficarão
+        preview_area: pygame.Rect = pygame.Rect(300, 165, 125, 145)
+
+        # Imagem da peça
+        piece = game.pieces_images[game.pieces_poll[-1]]
+        piece_rect = piece.get_rect()
+
+        label_rect.center = preview_area.center
+        label_rect.top = preview_area.top
+
+        piece_rect.center = preview_area.center
+        piece_rect.top = label_rect.bottom
+
+        pygame.draw.rect(game.screen, COLORS["secondary_color"], preview_area)
+        self._draw_outline(preview_area, BORDER_WIDTH, BORDER_RADIUS)
+
+        game.screen.blit(label, label_rect)
+        game.screen.blit(piece, piece_rect)
+
+        
 
 
     def _draw_outline(self, rect: pygame.Rect, width: int, radius: int = 0) -> None:
